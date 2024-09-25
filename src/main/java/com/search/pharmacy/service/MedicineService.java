@@ -31,7 +31,7 @@ public class MedicineService {
     return newMedicineDTO;
   }
 
-  public List<MedicineDTO> getMatters() {
+  public List<MedicineDTO> getMedicines() {
     return medicineRepository.findAll().stream().map(mapper::toDto).toList();
   }
 }
