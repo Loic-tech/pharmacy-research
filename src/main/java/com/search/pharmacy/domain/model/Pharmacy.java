@@ -1,20 +1,19 @@
 package com.search.pharmacy.domain.model;
 
+import com.search.pharmacy.common.exception.orm.AbstractEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "PHARMACY")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Pharmacy {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Pharmacy extends AbstractEntity<Long> {
 
     @Column(name = "name")
     private String name;

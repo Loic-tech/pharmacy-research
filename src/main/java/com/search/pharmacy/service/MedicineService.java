@@ -1,5 +1,6 @@
 package com.search.pharmacy.service;
 
+import com.search.pharmacy.common.exception.InvalidParamException;
 import com.search.pharmacy.repository.MedicineRepository;
 import com.search.pharmacy.ws.mapper.MedicineMapper;
 import com.search.pharmacy.ws.model.MedicineDTO;
@@ -17,21 +18,24 @@ import static java.util.Optional.of;
 @RequiredArgsConstructor
 public class MedicineService {
 
-  private final MedicineRepository medicineRepository;
-  private final MedicineMapper mapper;
+    private final MedicineRepository medicineRepository;
+    private final MedicineMapper mapper;
 
-  @Transactional
-  public MedicineDTO create(MedicineDTO medicineDTO) {
-    MedicineDTO newMedicineDTO =
-        of(medicineDTO)
-            .map(mapper::toEntity)
-            .map(medicineRepository::save)
-            .map(mapper::toDto)
-            .orElseThrow();
-    return newMedicineDTO;
-  }
+    @Transactional
+    public MedicineDTO create(MedicineDTO medicineDTO) {
+        return of(medicineDTO)
+                .map(mapper::toEntity)
+                .map(medicineRepository::save)
+                .map(mapper::toDto)
+                .orElseThrow(
+                        () -> {
+                            log.debug("Could not create a new medicine");
+                            return new InvalidParamException("Could not create a new medicine");
+                        }
+                );
+    }
 
-  public List<MedicineDTO> getMedicines() {
-    return medicineRepository.findAll().stream().map(mapper::toDto).toList();
-  }
+    public List<MedicineDTO> getMedicines() {
+        return medicineRepository.findAll().stream().map(mapper::toDto).toList();
+    }
 }
