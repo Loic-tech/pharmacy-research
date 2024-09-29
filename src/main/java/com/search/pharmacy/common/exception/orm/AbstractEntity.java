@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.domain.Persistable;
 import org.springframework.lang.Nullable;
 
 import java.io.Serializable;
@@ -12,7 +13,7 @@ import java.util.Date;
 @Getter
 @Setter
 @MappedSuperclass
-public abstract class AbstractEntity<PK extends Serializable> implements Serializable {
+public abstract class AbstractEntity<PK extends Serializable> implements Persistable<PK> {
     private static final long serialVersionUID = -5554308939380869754L;
 
     @Id

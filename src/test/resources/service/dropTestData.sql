@@ -1,1 +1,1 @@
-DROP FROM pharmacy;
+DELETE FROM pharmacy;

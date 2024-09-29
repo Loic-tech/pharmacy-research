@@ -26,7 +26,7 @@ public class MedicineService {
         return of(medicineDTO)
                 .map(mapper::toEntity)
                 .map(medicineRepository::save)
-                .map(mapper::toDto)
+                .map(mapper::toDTO)
                 .orElseThrow(
                         () -> {
                             log.debug("Could not create a new medicine");
@@ -36,6 +36,6 @@ public class MedicineService {
     }
 
     public List<MedicineDTO> getMedicines() {
-        return medicineRepository.findAll().stream().map(mapper::toDto).toList();
+        return medicineRepository.findAll().stream().map(mapper::toDTO).toList();
     }
 }

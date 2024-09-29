@@ -6,6 +6,6 @@ services:
     environment:
       POSTGRES_USER: 'postgres'
       POSTGRES_PASSWORD: 'password'
-      POSTGRES_DB: 'book'
+      POSTGRES_DB: 'pharmacy'
     ports:
-      - "5432:5432"
+      - "5433:5433"

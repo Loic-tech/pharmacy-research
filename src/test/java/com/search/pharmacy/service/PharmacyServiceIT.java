@@ -16,24 +16,53 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = "spring.profiles.active=test")
 @RunWith(SpringRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class PharmacyServiceIT {
 
-    @Autowired private PharmacyRepository pharmacyRepository;
-    @Autowired private PharmacyService sut;
-    @Rule public ExpectedException thrown = ExpectedException.none();
+  @Autowired private PharmacyRepository pharmacyRepository;
+  @Autowired private PharmacyService sut;
+  @Rule public ExpectedException thrown = ExpectedException.none();
 
-    @Test
-    @Sql(scripts = "classpath:service/test_it_pharmacy_service.sql")
-    @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
-        scripts = "classpath:service/dropTestData.sql")
-    public void should_return_all_pharmacies() {
-        // When
-        List<PharmacyDTO> actual = sut.getPharmacies();
+  @Test
+  @Sql(scripts = "classpath:service/test_it_pharmacy_service.sql")
+  @Sql(
+      executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
+      scripts = "classpath:service/dropTestData.sql")
+  public void should_return_all_pharmacies() {
+    // When
+    List<PharmacyDTO> actual = sut.getPharmacies();
 
-        // Then
-        assertThat(actual).hasSize(3);
-    }
+    // Then
+    assertThat(actual).hasSize(3);
+  }
+
+  @Test
+  @Sql(scripts = "classpath:service/test_it_pharmacy_service.sql")
+  @Sql(
+      executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
+      scripts = "classpath:service/dropTestData.sql")
+  public void should_create_a_new_pharmacy() {
+    // Given
+    PharmacyDTO newPharmacyDTO =
+        PharmacyDTO.builder()
+            .name("Pharmacie Lafayatte")
+            .address("10 rue du Docteur Calmette")
+            .contact("01 02 03 04 05 06")
+            .latitude(56.265)
+            .longitude(45.256)
+            .build();
+
+    // When
+    PharmacyDTO pharmacyDTO = sut.createPharmacy(newPharmacyDTO);
+
+    // Then
+    assertThat(pharmacyDTO).isNotNull();
+    assertThat(pharmacyDTO.getName()).isEqualTo("Pharmacie Lafayatte");
+    assertThat(pharmacyDTO.getAddress()).isEqualTo("10 rue du Docteur Calmette");
+    assertThat(pharmacyDTO.getContact()).isEqualTo("01 02 03 04 05 06");
+    assertThat(pharmacyDTO.getLatitude()).isEqualTo(56.265);
+    assertThat(pharmacyDTO.getLongitude()).isEqualTo(45.256);
+  }
 }
