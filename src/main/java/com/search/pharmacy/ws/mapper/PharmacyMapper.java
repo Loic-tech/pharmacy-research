@@ -5,6 +5,7 @@ import com.search.pharmacy.domain.model.Pharmacy;
 import com.search.pharmacy.ws.model.PharmacyDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface PharmacyMapper extends AbstractMapper<Pharmacy, PharmacyDTO> {
@@ -26,4 +27,7 @@ public interface PharmacyMapper extends AbstractMapper<Pharmacy, PharmacyDTO> {
     @Mapping(target = "latitude", source = "latitude")
     @Mapping(target = "longitude", source = "longitude")
     Pharmacy toEntity(PharmacyDTO dto);
+
+    @Mapping(target = "id", ignore = true)
+    Pharmacy updateFromDTO(final PharmacyDTO dto, @MappingTarget Pharmacy entity);
 }

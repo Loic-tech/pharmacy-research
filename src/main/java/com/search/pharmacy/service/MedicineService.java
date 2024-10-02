@@ -18,24 +18,46 @@ import static java.util.Optional.of;
 @RequiredArgsConstructor
 public class MedicineService {
 
-    private final MedicineRepository medicineRepository;
-    private final MedicineMapper mapper;
+  private final MedicineRepository medicineRepository;
+  private final MedicineMapper mapper;
 
-    @Transactional
-    public MedicineDTO create(MedicineDTO medicineDTO) {
-        return of(medicineDTO)
-                .map(mapper::toEntity)
-                .map(medicineRepository::save)
-                .map(mapper::toDTO)
-                .orElseThrow(
-                        () -> {
-                            log.debug("Could not create a new medicine");
-                            return new InvalidParamException("Could not create a new medicine");
-                        }
-                );
-    }
+  @Transactional
+  public MedicineDTO create(MedicineDTO medicineDTO) {
+    log.info("[MedicineService] Create Medicine : {}", medicineDTO);
+    return of(medicineDTO)
+        .map(mapper::toEntity)
+        .map(medicineRepository::save)
+        .map(mapper::toDTO)
+        .orElseThrow(
+            () -> {
+              log.debug("Could not create a new medicine");
+              return new InvalidParamException("Could not create a new medicine");
+            });
+  }
 
-    public List<MedicineDTO> getMedicines() {
-        return medicineRepository.findAll().stream().map(mapper::toDTO).toList();
-    }
+  public List<MedicineDTO> getMedicines() {
+    return medicineRepository.findAll().stream().map(mapper::toDTO).toList();
+  }
+
+  public MedicineDTO getMedicine(Long medicineId) {
+    return medicineRepository
+        .findById(medicineId)
+        .map(mapper::toDTO)
+        .orElseThrow(
+            () -> new InvalidParamException("Could not find medicine with id: " + medicineId));
+  }
+
+  @Transactional
+  public MedicineDTO update(Long id, MedicineDTO medicineDTO) {
+    return medicineRepository
+        .findById(id)
+        .map(medicine -> mapper.updateFromDTO(medicineDTO, medicine))
+        .map(medicineRepository::save)
+        .map(mapper::toDTO)
+        .orElseThrow(
+            () -> {
+              log.debug("Could not update medicine");
+              return new InvalidParamException("Could not update medicine");
+            });
+  }
 }
