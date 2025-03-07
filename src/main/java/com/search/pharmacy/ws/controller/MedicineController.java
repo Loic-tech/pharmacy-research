@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
-import com.search.pharmacy.common.exception.InvalidParamException;
 import com.search.pharmacy.common.exception.NotFoundException;
 import com.search.pharmacy.service.MedicineService;
 import com.search.pharmacy.utils.Utils;
@@ -20,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -40,6 +38,18 @@ public class MedicineController {
   @GetMapping(produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<List<MedicineDTO>> getMedicines() {
     return ResponseEntity.ok(medicineService.getMedicines());
+  }
+
+  @PostMapping("/populate")
+  public ResponseEntity<Void> populateDB() {
+    medicineService.populateDB();
+    return ResponseEntity.ok().build();
+  }
+
+  @GetMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
+  public ResponseEntity<MedicineDTO> getMedicine(@PathVariable(value = "id") Long id) {
+    log.debug("[ENDPOINT] request to get Medicine : {}", id);
+    return ResponseEntity.ok(medicineService.getMedicine(id));
   }
 
   @PatchMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
@@ -72,5 +82,14 @@ public class MedicineController {
     MedicineDTO patchedMedicineDTO = objectMapper.convertValue(patched, MedicineDTO.class);
 
     return ResponseEntity.ok(medicineService.update(id, patchedMedicineDTO));
+  }
+
+  @DeleteMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
+  public ResponseEntity<Void> deleteMedicine(@PathVariable(value = "id") Long medicineId) {
+    log.info("[ENDPOINT] Received request to delete medicine with id {}", medicineId);
+
+    medicineService.delete(medicineId);
+
+    return ResponseEntity.ok().build();
   }
 }

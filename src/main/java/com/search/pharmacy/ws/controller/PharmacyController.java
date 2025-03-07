@@ -1,6 +1,7 @@
 package com.search.pharmacy.ws.controller;
 
 import com.search.pharmacy.service.PharmacyService;
+import com.search.pharmacy.ws.model.MedicineDTO;
 import com.search.pharmacy.ws.model.PharmacyDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,15 +17,21 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 public class PharmacyController {
 
-    private final PharmacyService pharmacyService;
+  private final PharmacyService pharmacyService;
 
-    @PostMapping(consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity<PharmacyDTO> createPharmacy(@RequestBody PharmacyDTO pharmacyDTO) {
-        return new ResponseEntity<>(pharmacyService.createPharmacy(pharmacyDTO), HttpStatus.CREATED);
-    }
+  @PostMapping(consumes = APPLICATION_JSON_VALUE)
+  public ResponseEntity<PharmacyDTO> createPharmacy(@RequestBody PharmacyDTO pharmacyDTO) {
+    return new ResponseEntity<>(pharmacyService.createPharmacy(pharmacyDTO), HttpStatus.CREATED);
+  }
 
-    @GetMapping(consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<PharmacyDTO>> getAllPharmacies() {
-        return ResponseEntity.ok(pharmacyService.getPharmacies());
-    }
+  @PostMapping("/populate")
+  public ResponseEntity<Void> populateDB() {
+    pharmacyService.populateDB();
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  @GetMapping(consumes = APPLICATION_JSON_VALUE)
+  public ResponseEntity<List<PharmacyDTO>> getAllPharmacies() {
+    return ResponseEntity.ok(pharmacyService.getPharmacies());
+  }
 }

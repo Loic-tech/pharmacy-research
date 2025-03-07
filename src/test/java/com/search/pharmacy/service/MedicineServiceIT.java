@@ -2,6 +2,8 @@ package com.search.pharmacy.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.search.pharmacy.domain.model.Medicine;
+import com.search.pharmacy.repository.MedicineRepository;
 import com.search.pharmacy.ws.model.MedicineDTO;
 import java.util.List;
 import org.junit.Rule;
@@ -23,6 +25,8 @@ public class MedicineServiceIT {
 
   @Autowired private MedicineService sut;
   @Rule public ExpectedException thrown = ExpectedException.none();
+  @Autowired
+  private MedicineRepository medicineRepository;
 
   @Test
   @Sql(scripts = "classpath:service/test_it_medicine_service.sql")
@@ -84,5 +88,22 @@ public class MedicineServiceIT {
     assertThat(actual).isNotNull();
     assertThat(actual.getName()).isEqualTo("Fervex");
     assertThat(actual.getDescription()).isEqualTo("douleurs");
+  }
+
+  @Test
+  @Sql(scripts = "classpath:service/test_it_medicine_service.sql")
+  @Sql(
+          scripts = "classpath:service/dropTestData.sql",
+          executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+  public void should_delete_medicine() {
+    // Given
+    Long medicineId = 2L;
+
+    // When
+    sut.delete(medicineId);
+
+    // Then
+    List<Medicine> actual = medicineRepository.findAll();
+    assertThat(actual).hasSize(2);
   }
 }

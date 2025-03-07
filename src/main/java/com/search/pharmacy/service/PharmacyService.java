@@ -23,6 +23,7 @@ public class PharmacyService {
   private final PharmacyRepository pharmacyRepository;
   private final PharmacyMapper mapper;
   private final MedicineRepository medicineRepository;
+  private final ExcelService excelService;
 
   @Transactional
   public PharmacyDTO createPharmacy(PharmacyDTO pharmacyDTO) {
@@ -35,6 +36,11 @@ public class PharmacyService {
               log.debug("Could not create a new pharmacy");
               return new InvalidParamException("Could not create a new pharmacy");
             });
+  }
+
+  @Transactional
+  public void populateDB() {
+    excelService.addPharmaciesListFromGouv();
   }
 
   public List<PharmacyDTO> getPharmacies() {
@@ -64,5 +70,11 @@ public class PharmacyService {
               log.debug("Could not update pharmacy");
               return new InvalidParamException("Could not update pharmacy");
             });
+  }
+
+  public void deletePharmacy(Long pharmacyId) {
+      pharmacyRepository.findById(pharmacyId).ifPresentOrElse(
+              pharmacyRepository::delete, () -> log.debug("Could not delete pharmacy")
+      );
   }
 }

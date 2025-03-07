@@ -78,3 +78,62 @@ databaseChangeLog:
                   type: timestamp
                   constraints:
                     nullable: true
+  - changeSet:
+      id: init-stock-table
+      author: l.gnagoh
+      changes:
+        - createTable:
+            tableName: stock
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: id_pharmacy
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: id_medicine
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: quantity
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: timestamp
+                  constraints:
+                    nullable: true
+        - addForeignKeyConstraint:
+            baseColumnNames: id_pharmacy
+            baseTableName: stock
+            constraintName: fk_stock
+            deferrable: true
+            initiallyDeferred: true
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: pharmacy
+        - addForeignKeyConstraint:
+            baseColumnNames: id_medicine
+            baseTableName: stock
+            constraintName: fk_medicine_stock
+            deferrable: true
+            initiallyDeferred: true
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: medicine

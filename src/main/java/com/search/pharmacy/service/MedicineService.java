@@ -20,6 +20,7 @@ public class MedicineService {
 
   private final MedicineRepository medicineRepository;
   private final MedicineMapper mapper;
+  private final ExcelMedicineService excelMedicineService;
 
   @Transactional
   public MedicineDTO create(MedicineDTO medicineDTO) {
@@ -37,6 +38,11 @@ public class MedicineService {
 
   public List<MedicineDTO> getMedicines() {
     return medicineRepository.findAll().stream().map(mapper::toDTO).toList();
+  }
+
+  @Transactional
+  public void populateDB() {
+    excelMedicineService.populateDBWithMedicine();
   }
 
   public MedicineDTO getMedicine(Long medicineId) {
@@ -59,5 +65,13 @@ public class MedicineService {
               log.debug("Could not update medicine");
               return new InvalidParamException("Could not update medicine");
             });
+  }
+
+  public void delete(Long medicineId) {
+    medicineRepository
+        .findById(medicineId)
+        .ifPresentOrElse(
+            medicineRepository::delete,
+            () -> log.debug("Medicine with id {} not found", medicineId));
   }
 }

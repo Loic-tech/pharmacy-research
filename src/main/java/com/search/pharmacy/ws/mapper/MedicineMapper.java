@@ -11,10 +11,7 @@ import org.mapstruct.MappingTarget;
 public interface MedicineMapper extends AbstractMapper<Medicine, MedicineDTO> {
 
     @Override
-    @Mapping(target = "id", source = "entity.id")
-    @Mapping(target = "name", source = "entity.name")
-    @Mapping(target = "description", source = "entity.description")
-    MedicineDTO toDTO(Medicine entity);
+    MedicineDTO toDTO(final Medicine entity);
 
     @Override
     @Mapping(target = "id", source = "dto.id")
