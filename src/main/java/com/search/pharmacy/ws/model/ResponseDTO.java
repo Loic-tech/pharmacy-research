@@ -12,5 +12,5 @@ public class ResponseDTO {
     private String drugDescription;
     private String address;
     private Integer quantity;
-    private Double distance;
+    private Integer distance;
 }
