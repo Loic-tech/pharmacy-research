@@ -1,0 +1,12 @@
+[
+  {
+    "op": "replace",
+    "path": "/name",
+    "value": "Pharmacie des jardins"
+  },
+  {
+    "op": "replace",
+    "path": "/contact",
+    "value": "01 23 45 67 89"
+  }
+]

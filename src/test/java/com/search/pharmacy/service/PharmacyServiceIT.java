@@ -112,4 +112,21 @@ public class PharmacyServiceIT {
     assertThat(actual.getLatitude()).isEqualTo(48.8591547);
     assertThat(actual.getLongitude()).isEqualTo(2.3487923);
   }
+
+  @Test
+  @Sql(scripts = "classpath:service/test_it_pharmacy_service.sql")
+  @Sql(
+          executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
+          scripts = "classpath:service/dropTestData.sql")
+  public void should_delete_a_pharmacy() {
+    // given
+    Long pharmacyId = 1L;
+
+    // when
+    sut.deletePharmacy(pharmacyId);
+
+    // then
+    List<PharmacyDTO> pharmacies = sut.getPharmacies();
+    assertThat(pharmacies).hasSize(2);
+  }
 }
