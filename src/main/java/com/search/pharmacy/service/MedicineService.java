@@ -1,17 +1,18 @@
 package com.search.pharmacy.service;
 
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
+
 import com.search.pharmacy.common.exception.InvalidParamException;
 import com.search.pharmacy.repository.MedicineRepository;
 import com.search.pharmacy.ws.mapper.MedicineMapper;
+import com.search.pharmacy.ws.model.FileDTO;
 import com.search.pharmacy.ws.model.MedicineDTO;
+import java.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import static java.util.Optional.of;
 
 @Service
 @Slf4j
@@ -20,11 +21,25 @@ public class MedicineService {
 
   private final MedicineRepository medicineRepository;
   private final MedicineMapper mapper;
-  private final ExcelMedicineService excelMedicineService;
+  private final MinioService minioService;
 
   @Transactional
   public MedicineDTO create(MedicineDTO medicineDTO) {
     log.info("[MedicineService] Create Medicine : {}", medicineDTO);
+
+    List<FileDTO> fileDTOS = new ArrayList<>();
+
+    ofNullable(medicineDTO.getMultipartFiles()).ifPresent(files -> files.forEach(file -> {
+        try {
+            minioService.uploadFiles(file);
+            fileDTOS.add(new FileDTO(minioService.generatePresignedUrl(file.getOriginalFilename())));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }));
+
+    medicineDTO.setFiles(fileDTOS);
+
     return of(medicineDTO)
         .map(mapper::toEntity)
         .map(medicineRepository::save)
@@ -38,11 +53,6 @@ public class MedicineService {
 
   public List<MedicineDTO> getMedicines() {
     return medicineRepository.findAll().stream().map(mapper::toDTO).toList();
-  }
-
-  @Transactional
-  public void populateDB() {
-    excelMedicineService.populateDBWithMedicine();
   }
 
   public MedicineDTO getMedicine(Long medicineId) {
@@ -73,5 +83,9 @@ public class MedicineService {
         .ifPresentOrElse(
             medicineRepository::delete,
             () -> log.debug("Medicine with id {} not found", medicineId));
+  }
+
+  private String getPresignedUrl(String filename) {
+    return "http://localhost:9001/choupi/" + filename;
   }
 }

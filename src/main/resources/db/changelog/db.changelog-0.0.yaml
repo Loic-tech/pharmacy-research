@@ -1,13 +1,13 @@
 databaseChangeLog:
   - changeSet:
-      id: init-medicine-and-pharmacy-table
+      id: init-medicine-table
       author: l.gnagoh
       changes:
         - createTable:
-            tableName: medicine
+            tableName: categories
             columns:
               - column:
-                  name: id
+                  name: id_category
                   type: bigserial
                   autoIncrement: true
                   constraints:
@@ -15,11 +15,6 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: name
-                  type: varchar(255)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: description
                   type: varchar(255)
                   constraints:
                     nullable: false
@@ -34,10 +29,10 @@ databaseChangeLog:
                   constraints:
                     nullable: true
         - createTable:
-            tableName: pharmacy
+            tableName: sub_categories
             columns:
               - column:
-                  name: id
+                  name: id_sub_category
                   type: bigserial
                   autoIncrement: true
                   constraints:
@@ -49,23 +44,128 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: address
+                  name: id_category
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: timestamp
+                  constraints:
+                    nullable: true
+        - createTable:
+            tableName: medicine
+            columns:
+              - column:
+                  name: id_medicine
+                  type: bigserial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
                   type: varchar(255)
                   constraints:
                     nullable: false
               - column:
-                  name: contact
+                  name: small_description
                   type: varchar(255)
                   constraints:
                     nullable: false
               - column:
-                  name: latitude
-                  type: double
+                  name: reference
+                  type: varchar(128)
                   constraints:
                     nullable: false
               - column:
-                  name: longitude
-                  type: double
+                  name: quantity
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: complete_description
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: using_advice
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: composition
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: id_category
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: id_sub_category
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: timestamp
+                  constraints:
+                    nullable: true
+        - addForeignKeyConstraint:
+            baseColumnNames: id_category
+            baseTableName: medicine
+            constraintName: fk_medicine_categories
+            deferrable: true
+            initiallyDeferred: true
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id_category
+            referencedTableName: categories
+        - addForeignKeyConstraint:
+            baseColumnNames: id_sub_category
+            baseTableName: medicine
+            constraintName: fk_medicine_sub_categories
+            deferrable: true
+            initiallyDeferred: true
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id_sub_category
+            referencedTableName: sub_categories
+        - addForeignKeyConstraint:
+            baseColumnNames: id_category
+            baseTableName: sub_categories
+            constraintName: fk_sub_category_categories
+            deferrable: true
+            initiallyDeferred: true
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id_category
+            referencedTableName: categories
+        - createTable:
+            tableName: files
+            columns:
+              - column:
+                  name: id_file
+                  type: bigserial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: url
+                  type: varchar(1024)
                   constraints:
                     nullable: false
               - column:
@@ -79,61 +179,39 @@ databaseChangeLog:
                   constraints:
                     nullable: true
   - changeSet:
-      id: init-stock-table
+      id: add_table_medicine_file
       author: l.gnagoh
       changes:
         - createTable:
-            tableName: stock
+            tableName: medicine_file
             columns:
-              - column:
-                  name: id
-                  type: bigserial
-                  autoIncrement: true
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-              - column:
-                  name: id_pharmacy
-                  type: bigint
-                  constraints:
-                    nullable: false
               - column:
                   name: id_medicine
                   type: bigint
                   constraints:
                     nullable: false
               - column:
-                  name: quantity
-                  type: integer
+                  name: id_file
+                  type: bigint
                   constraints:
                     nullable: false
-              - column:
-                  name: created_date
-                  type: timestamp
-                  constraints:
-                    nullable: false
-              - column:
-                  name: last_modified_date
-                  type: timestamp
-                  constraints:
-                    nullable: true
-        - addForeignKeyConstraint:
-            baseColumnNames: id_pharmacy
-            baseTableName: stock
-            constraintName: fk_stock
-            deferrable: true
-            initiallyDeferred: true
-            onDelete: NO ACTION
-            onUpdate: NO ACTION
-            referencedColumnNames: id
-            referencedTableName: pharmacy
         - addForeignKeyConstraint:
             baseColumnNames: id_medicine
-            baseTableName: stock
-            constraintName: fk_medicine_stock
+            baseTableName: medicine_file
+            constraintName: fk_id_medicine_id_medicine_file
             deferrable: true
             initiallyDeferred: true
             onDelete: NO ACTION
             onUpdate: NO ACTION
-            referencedColumnNames: id
+            referencedColumnNames: id_medicine
             referencedTableName: medicine
+        - addForeignKeyConstraint:
+            baseColumnNames: id_file
+            baseTableName: medicine_file
+            constraintName: fk_id_file_medicine_file
+            deferrable: true
+            initiallyDeferred: true
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id_file
+            referencedTableName: files

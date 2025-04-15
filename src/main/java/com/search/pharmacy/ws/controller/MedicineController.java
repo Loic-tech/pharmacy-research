@@ -12,14 +12,13 @@ import com.search.pharmacy.common.exception.NotFoundException;
 import com.search.pharmacy.service.MedicineService;
 import com.search.pharmacy.utils.Utils;
 import com.search.pharmacy.ws.model.MedicineDTO;
-
-import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/medicine")
@@ -38,12 +37,6 @@ public class MedicineController {
   @GetMapping(produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<List<MedicineDTO>> getMedicines() {
     return ResponseEntity.ok(medicineService.getMedicines());
-  }
-
-  @PostMapping("/populate")
-  public ResponseEntity<Void> populateDB() {
-    medicineService.populateDB();
-    return ResponseEntity.ok().build();
   }
 
   @GetMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)

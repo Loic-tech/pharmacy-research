@@ -6,7 +6,6 @@ import static org.hamcrest.CoreMatchers.is;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jackson.JsonLoader;
 import com.github.fge.jsonpatch.JsonPatch;
-import com.search.pharmacy.ws.model.PharmacyDTO;
 import io.restassured.http.ContentType;
 import java.io.IOException;
 import org.junit.Test;

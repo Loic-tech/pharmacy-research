@@ -1,7 +1,5 @@
 package com.search.pharmacy.service;
 
-import com.search.pharmacy.repository.PharmacyRepository;
-import com.search.pharmacy.ws.model.PharmacyDTO;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
