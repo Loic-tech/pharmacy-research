@@ -20,17 +20,17 @@ public class MedicineDTO {
   @NotNull(message = "small description cannot be null")
   private String smallDescription;
 
-  private List<MultipartFile> multipartFiles;
-
-  @NotNull(message = "Images for the drug should not be null")
-  @ApiModelProperty(value = "list of files associated to the current drug")
-  private List<FileDTO> files;
+  private String url;
 
   @NotNull(message = "reference for the drug should not be null")
   private String reference;
 
   @NotNull(message = "quantity for the drug should not be null")
   private Integer quantity;
+
+  private Double newPrice;
+
+  private Double oldPrice;
 
   @NotNull(message = "complete description for the drug should not be null")
   private String completeDescription;

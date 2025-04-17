@@ -14,6 +14,8 @@ import org.mapstruct.MappingTarget;
 public interface MedicineMapper extends AbstractMapper<Medicine, MedicineDTO> {
 
   @Override
+  @Mapping(target = "idCategory", source = "entity.category.id")
+  @Mapping(target = "idSubCategory", source = "entity.subCategory.id")
   MedicineDTO toDTO(final Medicine entity);
 
   @Override
@@ -25,6 +27,9 @@ public interface MedicineMapper extends AbstractMapper<Medicine, MedicineDTO> {
   @Mapping(target = "completeDescription", source = "dto.completeDescription")
   @Mapping(target = "usingAdvice", source = "dto.usingAdvice")
   @Mapping(target = "composition", source = "dto.composition")
+  @Mapping(target = "newPrice", source = "dto.newPrice")
+  @Mapping(target = "url", source = "dto.url")
+  @Mapping(target = "oldPrice", source = "dto.oldPrice")
   @Mapping(
       target = "category",
       source = "idCategory",
@@ -34,8 +39,6 @@ public interface MedicineMapper extends AbstractMapper<Medicine, MedicineDTO> {
       source = "idSubCategory",
       qualifiedByName = {"AssetQualifier", "IdToSubCategory"})
   Medicine toEntity(MedicineDTO dto);
-
-
 
   @Mapping(target = "id", ignore = true)
   Medicine updateFromDTO(final MedicineDTO dto, @MappingTarget Medicine entity);

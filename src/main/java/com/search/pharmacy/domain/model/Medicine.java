@@ -23,16 +23,9 @@ public class Medicine extends AbstractEntity<Long> {
   @ToString.Include
   private String smallDescription;
 
-  @ManyToMany(
-      fetch = FetchType.LAZY,
-      cascade = {CascadeType.ALL})
-  @JoinTable(
-      name = "MEDICINE_FILE",
-      joinColumns = @JoinColumn(name = "ID_MEDICINE"),
-      inverseJoinColumns = @JoinColumn(name = "ID_FILE"))
-  @OrderBy(value = "id")
-  @Accessors(chain = true)
-  private Set<File> files;
+  @Column(name = "url")
+  @ToString.Include
+  private String url;
 
   @Column(name = "reference")
   private String reference;
@@ -52,13 +45,21 @@ public class Medicine extends AbstractEntity<Long> {
   @ToString.Include
   private String composition;
 
+  @Column(name = "new_price")
+  @ToString.Include
+  private Double newPrice;
+
+  @Column(name = "old_price")
+  @ToString.Include
+  private Double OldPrice;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "id_category", nullable = false)
   @ToString.Include
   private Category category;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "ID_SUB_CATEGORY", nullable = false)
+  @JoinColumn(name = "ID_SUB_CATEGORY")
   @EqualsAndHashCode.Include
   @ToString.Include
   private SubCategory subCategory;

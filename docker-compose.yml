@@ -13,7 +13,7 @@ services:
     environment:
       - MINIO_ROOT_USER=medicaldust
       - MINIO_ROOT_PASSWORD=medicaldust1512Y@
-      - MINIO_DEFAULT_BUCKETS=choupi
+      - MINIO_DEFAULT_BUCKETS=test-images
 
 networks:
   minionetwork:

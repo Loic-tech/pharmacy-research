@@ -12,11 +12,14 @@ import com.search.pharmacy.common.exception.NotFoundException;
 import com.search.pharmacy.service.MedicineService;
 import com.search.pharmacy.utils.Utils;
 import com.search.pharmacy.ws.model.MedicineDTO;
+import com.search.pharmacy.ws.model.MedicineDetailDTO;
+import com.search.pharmacy.ws.model.MedicineListDTO;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -29,18 +32,18 @@ public class MedicineController {
   private final MedicineService medicineService;
   private final ObjectMapper objectMapper;
 
-  @PostMapping(consumes = APPLICATION_JSON_VALUE)
-  public ResponseEntity<MedicineDTO> createMedicine(@RequestBody MedicineDTO medicineDTO) {
-    return ResponseEntity.ok(medicineService.create(medicineDTO));
+  @PostMapping
+  public ResponseEntity<MedicineDTO> createMedicine(@ModelAttribute MedicineDTO medicineDTO, @RequestPart MultipartFile file) throws Exception {
+    return ResponseEntity.ok(medicineService.create(medicineDTO, file));
   }
 
   @GetMapping(produces = APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<MedicineDTO>> getMedicines() {
+  public ResponseEntity<List<MedicineListDTO>> getMedicines() {
     return ResponseEntity.ok(medicineService.getMedicines());
   }
 
   @GetMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
-  public ResponseEntity<MedicineDTO> getMedicine(@PathVariable(value = "id") Long id) {
+  public ResponseEntity<MedicineDetailDTO> getMedicine(@PathVariable(value = "id") Long id) {
     log.debug("[ENDPOINT] request to get Medicine : {}", id);
     return ResponseEntity.ok(medicineService.getMedicine(id));
   }
@@ -51,7 +54,7 @@ public class MedicineController {
       throws JsonPatchException {
     log.info("[ENDPOINT] Received request to update medicine with id {}", id);
 
-    MedicineDTO medicineById =
+    MedicineDetailDTO medicineById =
         ofNullable(medicineService.getMedicine(id))
             .orElseThrow(
                 () -> {

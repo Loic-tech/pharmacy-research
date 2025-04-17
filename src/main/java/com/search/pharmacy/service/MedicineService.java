@@ -1,18 +1,22 @@
 package com.search.pharmacy.service;
 
-import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 
 import com.search.pharmacy.common.exception.InvalidParamException;
 import com.search.pharmacy.repository.MedicineRepository;
+import com.search.pharmacy.ws.mapper.MedicineDetailMapper;
+import com.search.pharmacy.ws.mapper.MedicineListMapper;
 import com.search.pharmacy.ws.mapper.MedicineMapper;
-import com.search.pharmacy.ws.model.FileDTO;
 import com.search.pharmacy.ws.model.MedicineDTO;
 import java.util.*;
+
+import com.search.pharmacy.ws.model.MedicineDetailDTO;
+import com.search.pharmacy.ws.model.MedicineListDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Slf4j
@@ -22,25 +26,17 @@ public class MedicineService {
   private final MedicineRepository medicineRepository;
   private final MedicineMapper mapper;
   private final MinioService minioService;
+  private final MedicineListMapper medicineListMapper;
+  private final MedicineDetailMapper medicineDetailMapper;
 
   @Transactional
-  public MedicineDTO create(MedicineDTO medicineDTO) {
+  public MedicineDTO create(MedicineDTO medicineDTO, MultipartFile file) throws Exception {
     log.info("[MedicineService] Create Medicine : {}", medicineDTO);
 
-    List<FileDTO> fileDTOS = new ArrayList<>();
+    String url = minioService.uploadFiles(file);
+    medicineDTO.setUrl(url);
 
-    ofNullable(medicineDTO.getMultipartFiles()).ifPresent(files -> files.forEach(file -> {
-        try {
-            minioService.uploadFiles(file);
-            fileDTOS.add(new FileDTO(minioService.generatePresignedUrl(file.getOriginalFilename())));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }));
-
-    medicineDTO.setFiles(fileDTOS);
-
-    return of(medicineDTO)
+    return Optional.of(medicineDTO)
         .map(mapper::toEntity)
         .map(medicineRepository::save)
         .map(mapper::toDTO)
@@ -51,14 +47,14 @@ public class MedicineService {
             });
   }
 
-  public List<MedicineDTO> getMedicines() {
-    return medicineRepository.findAll().stream().map(mapper::toDTO).toList();
+    public List<MedicineListDTO> getMedicines() {
+    return medicineRepository.findAll().stream().map(medicineListMapper::toListDTO).toList();
   }
 
-  public MedicineDTO getMedicine(Long medicineId) {
+  public MedicineDetailDTO getMedicine(Long medicineId) {
     return medicineRepository
         .findById(medicineId)
-        .map(mapper::toDTO)
+        .map(medicineDetailMapper::toDTO)
         .orElseThrow(
             () -> new InvalidParamException("Could not find medicine with id: " + medicineId));
   }

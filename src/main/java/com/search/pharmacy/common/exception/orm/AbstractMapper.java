@@ -18,4 +18,6 @@ public interface AbstractMapper<E extends AbstractEntity, D>  {
      * @return <code>E</code> entity object result
      */
     E toEntity(final D dto);
+
+    D toListDTO(final E entity);
 }
