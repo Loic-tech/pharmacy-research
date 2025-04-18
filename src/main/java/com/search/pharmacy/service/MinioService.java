@@ -2,6 +2,7 @@ package com.search.pharmacy.service;
 
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
+import io.minio.RemoveObjectArgs;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,16 @@ public class MinioService {
                     .build());
     
     return getPreSignedUrl(file.getOriginalFilename());
+  }
+
+  public void deleteFile(String filename) throws Exception {
+    minioClient.removeObject(
+            RemoveObjectArgs
+                    .builder()
+                    .bucket("test-images")
+                    .object(filename)
+                    .build()
+    );
   }
 
   private String getPreSignedUrl(String filename) {
