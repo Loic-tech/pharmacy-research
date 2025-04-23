@@ -14,6 +14,8 @@ import java.lang.reflect.Field;
 import java.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
@@ -48,8 +50,23 @@ public class MedicineService {
             });
   }
 
-  public List<MedicineListDTO> getMedicines() {
-    return medicineRepository.findAll().stream().map(medicineListMapper::toListDTO).toList();
+  public List<MedicineListDTO> getMedicines(int page, int size) {
+    return medicineRepository.findAll(Pageable.ofSize(size).withPage(page)).stream()
+        .map(medicineListMapper::toListDTO)
+        .toList();
+  }
+
+  public Page<MedicineListDTO> getMedicinesByCategory(Long categoryId, int page, int size) {
+    Pageable pageable = Pageable.ofSize(size).withPage(page);
+    return medicineRepository
+        .findAllByCategory_Id(categoryId, pageable)
+        .map(medicineListMapper::toListDTO);
+  }
+
+  public Page<MedicineListDTO> filterMedicines(String name, int page, int size) {
+    return medicineRepository
+        .findAllByNameIgnoreCaseContaining(name, Pageable.ofSize(size).withPage(page))
+        .map(medicineListMapper::toListDTO);
   }
 
   public MedicineDetailDTO getMedicine(Long medicineId) {

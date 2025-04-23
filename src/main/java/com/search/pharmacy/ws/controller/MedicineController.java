@@ -12,6 +12,7 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,9 +34,29 @@ public class MedicineController {
   }
 
   @GetMapping(produces = APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<MedicineListDTO>> getMedicines() {
+  public ResponseEntity<List<MedicineListDTO>> getMedicines(
+      @RequestParam(required = false, defaultValue = "0") int page,
+      @RequestParam(required = false, defaultValue = "10") int size) {
     log.debug("[ENDPOINT] request to get all medicines :");
-    return ResponseEntity.ok(medicineService.getMedicines());
+    return ResponseEntity.ok(medicineService.getMedicines(page, size));
+  }
+
+  @GetMapping(value = "/by-category", produces = APPLICATION_JSON_VALUE)
+  public ResponseEntity<Page<MedicineListDTO>> getMedicinesByCategory(
+      @RequestParam Long categoryId,
+      @RequestParam(required = false, defaultValue = "0") int page,
+      @RequestParam(required = false, defaultValue = "10") int size) {
+    log.debug("[ENDPOINT] request to get all medicines by category : {}", categoryId);
+    return ResponseEntity.ok(medicineService.getMedicinesByCategory(categoryId, page, size));
+  }
+
+  @GetMapping(value = "/search", produces = APPLICATION_JSON_VALUE)
+  public ResponseEntity<Page<MedicineListDTO>> filterMedicines(
+      @RequestParam String name,
+      @RequestParam(required = false, defaultValue = "0") int page,
+      @RequestParam(required = false, defaultValue = "10") int size) {
+    log.debug("[ENDPOINT] request to filter medicines by name : {}", name);
+    return ResponseEntity.ok(medicineService.filterMedicines(name, page, size));
   }
 
   @GetMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
