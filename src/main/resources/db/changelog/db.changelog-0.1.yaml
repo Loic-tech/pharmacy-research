@@ -1,0 +1,97 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-user-table
+      author: medicaldust
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id_user
+                  type: bigserial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: firstname
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: lastname
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: timestamp
+                  constraints:
+                    nullable: true
+  - changeSet:
+      id: init-table-cart
+      author: medicaldust
+      changes:
+        - createTable:
+            tableName: cart
+            columns:
+              - column:
+                  name: id_cart
+                  type: bigserial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: timestamp
+                  constraints:
+                    nullable: true
+        - createTable:
+            tableName: cart_medicine
+            columns:
+              - column:
+                  name: id_cart
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: id_medicine
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseColumnNames: id_cart
+            baseTableName: cart_medicine
+            constraintName: fk_cart_medicine
+            deferrable: true
+            initiallyDeferred: true
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id_cart
+            referencedTableName: cart
+        - addForeignKeyConstraint:
+            baseColumnNames: id_medicine
+            baseTableName: cart_medicine
+            constraintName: fk_medicine_cart_fk
+            deferrable: true
+            initiallyDeferred: true
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id_medicine
+            referencedTableName: medicine

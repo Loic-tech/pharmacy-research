@@ -41,4 +41,11 @@ public class CategoryController {
     log.info("[ENDPOINT] Received request to update category with id {}", id);
     return ResponseEntity.ok(categoryService.update(id, fields));
   }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteCategory(@PathVariable(value = "id") Long categoryId) {
+    log.info("[ENDPOINT] Received request to delete category with id {}", categoryId);
+    categoryService.delete(categoryId);
+    return ResponseEntity.ok().build();
+  }
 }
