@@ -1,10 +1,7 @@
 package com.search.pharmacy.ws.model;
 
-import io.swagger.annotations.ApiModelProperty;
 import jakarta.validation.constraints.NotNull;
-import java.util.List;
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @ToString

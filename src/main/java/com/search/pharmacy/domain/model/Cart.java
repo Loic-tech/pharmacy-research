@@ -1,14 +1,8 @@
 package com.search.pharmacy.domain.model;
 
-
 import com.search.pharmacy.common.exception.orm.AbstractEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-import java.util.List;
+import lombok.*;
 
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @Entity
@@ -19,7 +13,11 @@ import java.util.List;
 @AttributeOverride(name = "id", column = @Column(name = "id_cart"))
 public class Cart extends AbstractEntity<Long> {
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "cart_medicine", joinColumns = @JoinColumn(name = "id_cart"), inverseJoinColumns = @JoinColumn(name = "id_medicine"))
-    private List<Medicine> medicines;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "id_medicine", nullable = false)
+  @ToString.Include
+  private Medicine medicine;
+
+  @Column(name = "quantity")
+  private Integer quantity;
 }

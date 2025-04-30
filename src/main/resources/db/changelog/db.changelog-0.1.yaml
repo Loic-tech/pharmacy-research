@@ -53,6 +53,16 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
+                  name: id_medicine
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: quantity
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
                   name: created_date
                   type: timestamp
                   constraints:
@@ -62,36 +72,110 @@ databaseChangeLog:
                   type: timestamp
                   constraints:
                     nullable: true
-        - createTable:
-            tableName: cart_medicine
-            columns:
-              - column:
-                  name: id_cart
-                  type: bigint
-                  constraints:
-                    nullable: false
-              - column:
-                  name: id_medicine
-                  type: bigint
-                  constraints:
-                    nullable: false
-        - addForeignKeyConstraint:
-            baseColumnNames: id_cart
-            baseTableName: cart_medicine
-            constraintName: fk_cart_medicine
-            deferrable: true
-            initiallyDeferred: true
-            onDelete: NO ACTION
-            onUpdate: NO ACTION
-            referencedColumnNames: id_cart
-            referencedTableName: cart
         - addForeignKeyConstraint:
             baseColumnNames: id_medicine
-            baseTableName: cart_medicine
-            constraintName: fk_medicine_cart_fk
+            baseTableName: cart
+            constraintName: fk_cart_medicine
             deferrable: true
             initiallyDeferred: true
             onDelete: NO ACTION
             onUpdate: NO ACTION
             referencedColumnNames: id_medicine
             referencedTableName: medicine
+  - changeSet:
+      id: init-order-table
+      author: medicaldust
+      changes:
+        - createTable:
+            tableName: order
+            columns:
+              - column:
+                  name: id_order
+                  type: bigserial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: id_user
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: total_amount
+                  type: double
+                  constraints:
+                    nullable: false
+              - column:
+                  name: address
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phone_number
+                  type: varchar(30)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: comment
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: timestamp
+                  constraints:
+                    nullable: true
+        - addForeignKeyConstraint:
+            baseColumnNames: id_user
+            baseTableName: order
+            constraintName: fk_order_user
+            deferrable: true
+            initiallyDeferred: true
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id_user
+            referencedTableName: user
+        - createTable:
+            tableName: order_cart
+            columns:
+              - column:
+                  name: id_order
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: id_cart
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseColumnNames: id_order
+            baseTableName: order_cart
+            constraintName: fk_order_cart_fk
+            deferrable: true
+            initiallyDeferred: true
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id_order
+            referencedTableName: order
+        - addForeignKeyConstraint:
+            baseColumnNames: id_cart
+            baseTableName: order_cart
+            constraintName: fk_order_cart_fk_prime
+            deferrable: true
+            initiallyDeferred: true
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id_cart
+            referencedTableName: cart
