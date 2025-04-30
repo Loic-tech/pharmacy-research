@@ -126,6 +126,12 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+
+              - column:
+                  name: order_date
+                  type: datetime
+                  constraints:
+                    nullable: false
               - column:
                   name: created_date
                   type: timestamp

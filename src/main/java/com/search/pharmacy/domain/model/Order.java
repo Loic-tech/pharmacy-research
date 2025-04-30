@@ -5,6 +5,9 @@ import com.search.pharmacy.common.exception.orm.AbstractEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
@@ -40,6 +43,9 @@ public class Order extends AbstractEntity<Long> {
 
     @Column(name = "comment")
     private String comment;
+
+    @Column(name = "order_date")
+    private LocalDateTime orderDate = LocalDateTime.now();
 
     public enum OrderStatus {
         EN_ATTENTE,
