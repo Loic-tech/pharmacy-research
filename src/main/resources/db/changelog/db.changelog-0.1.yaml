@@ -87,7 +87,7 @@ databaseChangeLog:
       author: medicaldust
       changes:
         - createTable:
-            tableName: order
+            tableName: orders
             columns:
               - column:
                   name: id_order
@@ -138,8 +138,8 @@ databaseChangeLog:
                     nullable: true
         - addForeignKeyConstraint:
             baseColumnNames: id_user
-            baseTableName: order
-            constraintName: fk_order_user
+            baseTableName: orders
+            constraintName: fk_orders_user
             deferrable: true
             initiallyDeferred: true
             onDelete: NO ACTION
@@ -147,7 +147,7 @@ databaseChangeLog:
             referencedColumnNames: id_user
             referencedTableName: user
         - createTable:
-            tableName: order_cart
+            tableName: orders_cart
             columns:
               - column:
                   name: id_order
@@ -161,18 +161,18 @@ databaseChangeLog:
                     nullable: false
         - addForeignKeyConstraint:
             baseColumnNames: id_order
-            baseTableName: order_cart
-            constraintName: fk_order_cart_fk
+            baseTableName: orders_cart
+            constraintName: fk_orders_cart_fk
             deferrable: true
             initiallyDeferred: true
             onDelete: NO ACTION
             onUpdate: NO ACTION
             referencedColumnNames: id_order
-            referencedTableName: order
+            referencedTableName: orders
         - addForeignKeyConstraint:
             baseColumnNames: id_cart
-            baseTableName: order_cart
-            constraintName: fk_order_cart_fk_prime
+            baseTableName: orders_cart
+            constraintName: fk_orders_cart_fk_prime
             deferrable: true
             initiallyDeferred: true
             onDelete: NO ACTION
