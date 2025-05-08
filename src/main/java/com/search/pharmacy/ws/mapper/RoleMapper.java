@@ -5,5 +5,8 @@ import com.search.pharmacy.domain.model.Roles;
 import com.search.pharmacy.ws.model.RoleDTO;
 import org.mapstruct.Mapper;
 
+import java.util.Set;
+
 @Mapper(componentModel = "spring")
-public interface RoleMapper extends AbstractMapper<Roles, RoleDTO> {}
+public interface RoleMapper extends AbstractMapper<Roles, RoleDTO> {
+}

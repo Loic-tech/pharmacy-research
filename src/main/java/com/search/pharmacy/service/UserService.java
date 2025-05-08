@@ -8,14 +8,12 @@ import com.search.pharmacy.ws.mapper.RoleMapper;
 import com.search.pharmacy.ws.mapper.UserMapper;
 import com.search.pharmacy.ws.model.AuthenticatedUserDTO;
 import com.search.pharmacy.ws.model.LoginUserDTO;
+import com.search.pharmacy.ws.model.RoleDTO;
 import com.search.pharmacy.ws.model.UserDTO;
-import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import jakarta.transaction.Transactional;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -55,7 +53,7 @@ public class UserService {
         .firstName(user.get().getFirstName())
         .lastName(user.get().getLastName())
         .token(jwtToken)
-        .roles(Collections.singletonList(roleMapper.toListDTO((Roles) user.get().getRoles().stream().toList())))
+        .roles(convertToRoleDTOs(user.get().getRoles()))
         .build();
   }
 
@@ -84,5 +82,11 @@ public class UserService {
 
   public void delete(Long id) {
     userRepository.deleteById(id);
+  }
+
+  public Set<RoleDTO> convertToRoleDTOs(Set<Roles> roles) {
+    return roles.stream()
+        .map(role -> new RoleDTO(role.getId(), role.getName()))
+        .collect(Collectors.toSet());
   }
 }

@@ -9,6 +9,7 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,6 +33,7 @@ public class UserController {
   }
 
   @GetMapping
+  @PreAuthorize("hasRole('ROLE_USER')")
   public ResponseEntity<List<UserDTO>> getUsers() {
     log.debug("[ENDPOINT] request to get all users");
     return ResponseEntity.ok(userService.getUsers());
