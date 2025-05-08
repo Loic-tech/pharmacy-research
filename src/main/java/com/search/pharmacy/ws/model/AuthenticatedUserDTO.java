@@ -7,16 +7,15 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @Builder
-public class UserDTO {
+public class AuthenticatedUserDTO {
 
-  private Long id;
-  private String firstName;
-  private String lastName;
-  private String email;
-  private String password;
-  private List<RoleDTO> roles;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String token;
+    private List<RoleDTO> roles;
 }

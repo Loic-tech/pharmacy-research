@@ -1,6 +1,8 @@
 package com.search.pharmacy.ws.controller;
 
 import com.search.pharmacy.service.UserService;
+import com.search.pharmacy.ws.model.AuthenticatedUserDTO;
+import com.search.pharmacy.ws.model.LoginUserDTO;
 import com.search.pharmacy.ws.model.UserDTO;
 import java.util.List;
 import java.util.Map;
@@ -15,37 +17,43 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class UserController {
 
-    private final UserService userService;
+  private final UserService userService;
 
-    @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
-        log.debug("[ENDPOINT] request to create user");
-        return ResponseEntity.ok(userService.create(userDTO));
-    }
+  @PostMapping
+  public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
+    log.debug("[ENDPOINT] request to create user");
+    return ResponseEntity.ok(userService.create(userDTO));
+  }
 
-    @GetMapping
-    public ResponseEntity<List<UserDTO>> getUsers() {
-        log.debug("[ENDPOINT] request to get all users");
-        return ResponseEntity.ok(userService.getUsers());
-    }
+  @PostMapping("/auth")
+  public ResponseEntity<AuthenticatedUserDTO> login(@RequestBody LoginUserDTO loginUserDTO) {
+    log.debug("[ENDPOINT] request to login user");
+    return ResponseEntity.ok(userService.login(loginUserDTO));
+  }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getUser(@PathVariable(value = "id") Long id) {
-        log.debug("[ENDPOINT] request to get user with id {}", id);
-        return ResponseEntity.ok(userService.getUser(id));
-    }
+  @GetMapping
+  public ResponseEntity<List<UserDTO>> getUsers() {
+    log.debug("[ENDPOINT] request to get all users");
+    return ResponseEntity.ok(userService.getUsers());
+  }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable(value = "id") Long userId) {
-        log.info("[ENDPOINT] Received request to delete user with id {}", userId);
-        userService.delete(userId);
-        return ResponseEntity.ok().build();
-    }
+  @GetMapping("/{id}")
+  public ResponseEntity<UserDTO> getUser(@PathVariable(value = "id") Long id) {
+    log.debug("[ENDPOINT] request to get user with id {}", id);
+    return ResponseEntity.ok(userService.getUser(id));
+  }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(
-            @PathVariable Long id, @RequestParam(required = false) Map<String, Object> fields) {
-        log.info("[ENDPOINT] Received request to update user with id {}", id);
-        return ResponseEntity.ok(userService.update(id, fields));
-    }
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteUser(@PathVariable(value = "id") Long userId) {
+    log.info("[ENDPOINT] Received request to delete user with id {}", userId);
+    userService.delete(userId);
+    return ResponseEntity.ok().build();
+  }
+
+  @PatchMapping("/{id}")
+  public ResponseEntity<UserDTO> updateUser(
+      @PathVariable Long id, @RequestParam(required = false) Map<String, Object> fields) {
+    log.info("[ENDPOINT] Received request to update user with id {}", id);
+    return ResponseEntity.ok(userService.update(id, fields));
+  }
 }

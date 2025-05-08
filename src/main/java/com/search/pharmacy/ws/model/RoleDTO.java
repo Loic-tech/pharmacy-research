@@ -1,17 +1,14 @@
 package com.search.pharmacy.ws.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Data
-public class CartDTO {
+public class RoleDTO {
 
   private Long id;
-  private MedicineListDTO medicineListDTO;
-  private Integer quantity;
+  private String name;
 }

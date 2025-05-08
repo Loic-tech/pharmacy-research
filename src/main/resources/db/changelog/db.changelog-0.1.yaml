@@ -4,6 +4,31 @@ databaseChangeLog:
       author: medicaldust
       changes:
         - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: id_role
+                  type: bigserial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: timestamp
+                  constraints:
+                    nullable: true
+        - createTable:
             tableName: users
             columns:
               - column:
@@ -29,6 +54,11 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
                   name: created_date
                   type: timestamp
                   constraints:
@@ -38,50 +68,39 @@ databaseChangeLog:
                   type: timestamp
                   constraints:
                     nullable: true
-  - changeSet:
-      id: init-table-cart
-      author: medicaldust
-      changes:
         - createTable:
-            tableName: cart
+            tableName: users_roles
             columns:
               - column:
-                  name: id_cart
-                  type: bigserial
-                  autoIncrement: true
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-              - column:
-                  name: id_medicine
+                  name: id_user
                   type: bigint
                   constraints:
                     nullable: false
               - column:
-                  name: quantity
-                  type: int
+                  name: id_role
+                  type: bigint
                   constraints:
                     nullable: false
-              - column:
-                  name: created_date
-                  type: timestamp
-                  constraints:
-                    nullable: false
-              - column:
-                  name: last_modified_date
-                  type: timestamp
-                  constraints:
-                    nullable: true
         - addForeignKeyConstraint:
-            baseColumnNames: id_medicine
-            baseTableName: cart
-            constraintName: fk_cart_medicine
+            baseColumnNames: id_user
+            baseTableName: users_roles
+            constraintName: fk_users_roles_fk
             deferrable: true
             initiallyDeferred: true
             onDelete: NO ACTION
             onUpdate: NO ACTION
-            referencedColumnNames: id_medicine
-            referencedTableName: medicine
+            referencedColumnNames: id_user
+            referencedTableName: users
+        - addForeignKeyConstraint:
+            baseColumnNames: id_role
+            baseTableName: users_roles
+            constraintName: fk_users_roles_fk_prime
+            deferrable: true
+            initiallyDeferred: true
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id_role
+            referencedTableName: roles
   - changeSet:
       id: init-order-table
       author: medicaldust
@@ -153,7 +172,7 @@ databaseChangeLog:
             referencedColumnNames: id_user
             referencedTableName: user
         - createTable:
-            tableName: orders_cart
+            tableName: orders_medicine
             columns:
               - column:
                   name: id_order
@@ -161,14 +180,14 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: id_cart
+                  name: id_medicine
                   type: bigint
                   constraints:
                     nullable: false
         - addForeignKeyConstraint:
             baseColumnNames: id_order
-            baseTableName: orders_cart
-            constraintName: fk_orders_cart_fk
+            baseTableName: order_medicine
+            constraintName: fk_order_medicine_fk
             deferrable: true
             initiallyDeferred: true
             onDelete: NO ACTION
@@ -176,12 +195,12 @@ databaseChangeLog:
             referencedColumnNames: id_order
             referencedTableName: orders
         - addForeignKeyConstraint:
-            baseColumnNames: id_cart
-            baseTableName: orders_cart
-            constraintName: fk_orders_cart_fk_prime
+            baseColumnNames: id_medicine
+            baseTableName: orders_medicine
+            constraintName: fk_orders_medicine_fk_prime
             deferrable: true
             initiallyDeferred: true
             onDelete: NO ACTION
             onUpdate: NO ACTION
-            referencedColumnNames: id_cart
-            referencedTableName: cart
+            referencedColumnNames: id_medicine
+            referencedTableName: medicine
