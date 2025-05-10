@@ -12,6 +12,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,6 +24,7 @@ public class OrderController {
   private final TokenStorageService tokenStorageService;
 
   @PostMapping
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   public ResponseEntity<?> createOrder(@RequestBody OrderDTO orderDTO) {
     try {
       OrderSummaryDTO createdOrder = orderService.createOrder(orderDTO);
@@ -59,6 +61,7 @@ public class OrderController {
   }
 
   @GetMapping
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity<List<OrderSummaryDTO>> getOrders() {
     return ResponseEntity.ok(orderService.getOrders());
   }

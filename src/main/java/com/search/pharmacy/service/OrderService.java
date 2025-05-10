@@ -1,17 +1,18 @@
 package com.search.pharmacy.service;
 
 import com.search.pharmacy.common.exception.orm.UnauthenticatedUserException;
-import com.search.pharmacy.domain.model.Medicine;
-import com.search.pharmacy.domain.model.Order;
+import com.search.pharmacy.repository.CartRepository;
 import com.search.pharmacy.repository.OrderRepository;
 import com.search.pharmacy.ws.mapper.OrderMapper;
 import com.search.pharmacy.ws.mapper.OrderSummaryMapper;
-import com.search.pharmacy.ws.model.OrderDTO;
-import com.search.pharmacy.ws.model.OrderSummaryDTO;
-import com.search.pharmacy.ws.model.UserDTO;
+import com.search.pharmacy.ws.model.*;
 
+import java.beans.Transient;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,17 +32,18 @@ public class OrderService {
   private final OrderMapper orderMapper;
   private final OrderSummaryMapper orderSummaryMapper;
   private final OAuth2AuthorizedClientManager authorizedClientManager;
-  private final UserService userService;
+  private final CartRepository cartRepository;
 
+  @Transactional
   public OrderSummaryDTO createOrder(OrderDTO orderDTO) {
-    UserDTO userDTO = getCurrentAuthenticatedUser();
-
-    UserDTO userResponse = userService.create(userDTO);
-
-    orderDTO.setUserId(userResponse.getId());
+    calculateTotalAmount(orderDTO);
     return Optional.of(orderDTO)
+        .map(this::calculateTotalAmount)
         .map(orderMapper::toEntity)
-        .map(this::calculateOrderTotal)
+            .map(order -> {
+                cartRepository.saveAll(order.getCarts());
+              return order;
+            })
         .map(orderRepository::save)
         .map(orderSummaryMapper::toDTO)
         .orElseThrow(() -> new UnauthenticatedUserException("Could not create a new order"));
@@ -49,6 +51,26 @@ public class OrderService {
 
   public List<OrderSummaryDTO> getOrders() {
     return orderRepository.findAll().stream().map(orderSummaryMapper::toDTO).toList();
+  }
+
+  public OrderDTO calculateTotalAmount(OrderDTO orderDTO) {
+    if (orderDTO.getCart() == null || orderDTO.getCart().isEmpty()) {
+      orderDTO.setTotalAmount(0.0);
+    }
+
+    double total = 0.0;
+    for (CartDTO cartItem : orderDTO.getCart()) {
+      MedicineListDTO medicine = cartItem.getMedicine();
+      Integer quantity = cartItem.getQuantity();
+
+      if (medicine != null && medicine.getNewPrice() != null && quantity != null) {
+        total += medicine.getNewPrice() * quantity;
+      }
+    }
+
+    orderDTO.setTotalAmount(total);
+    orderDTO.setOrderDate(LocalDateTime.now());
+    return orderDTO;
   }
 
   public String getCurrentUserToken() {
@@ -69,16 +91,6 @@ public class OrderService {
     }
 
     return client.getAccessToken().getTokenValue();
-  }
-
-  private Order calculateOrderTotal(Order order) {
-    if (order.getMedicines() == null || order.getMedicines().isEmpty()) {
-      order.setTotalAmount(0.0);
-    }
-
-    order.setTotalAmount(order.getMedicines().stream().mapToDouble(Medicine::getNewPrice).sum());
-
-    return order;
   }
 
   private UserDTO getCurrentAuthenticatedUser() {

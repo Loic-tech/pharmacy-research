@@ -15,12 +15,8 @@ import lombok.*;
 @AttributeOverride(name = "id", column = @Column(name = "id_order"))
 public class Order extends AbstractEntity<Long> {
 
-  @ManyToMany(fetch = FetchType.LAZY)
-  @JoinTable(
-      name = "order_medicine",
-      joinColumns = @JoinColumn(name = "id_order"),
-      inverseJoinColumns = @JoinColumn(name = "id_medicine"))
-  private List<Medicine> medicines;
+  @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Cart> carts;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "id_user", nullable = false)
@@ -31,7 +27,7 @@ public class Order extends AbstractEntity<Long> {
   @Column(name = "status", nullable = false)
   private OrderStatus status;
 
-  @Column(name = "total_amount", nullable = false, insertable = false, updatable = false)
+  @Column(name = "total_amount")
   private Double totalAmount;
 
   @Column(name = "address")

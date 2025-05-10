@@ -106,6 +106,29 @@ databaseChangeLog:
       author: medicaldust
       changes:
         - createTable:
+            tableName: cart
+            columns:
+              - column:
+                  name: id_medicine
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: quantity
+                  type: integer
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseColumnNames: id_medicine
+            baseTableName: cart
+            constraintName: fk_cart_medicine
+            deferrable: true
+            initiallyDeferred: true
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id_medicine
+            referencedTableName: medicine
+        - createTable:
             tableName: orders
             columns:
               - column:
@@ -172,7 +195,7 @@ databaseChangeLog:
             referencedColumnNames: id_user
             referencedTableName: user
         - createTable:
-            tableName: orders_medicine
+            tableName: order_cart
             columns:
               - column:
                   name: id_order
@@ -180,14 +203,14 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: id_medicine
+                  name: id_cart
                   type: bigint
                   constraints:
                     nullable: false
         - addForeignKeyConstraint:
             baseColumnNames: id_order
-            baseTableName: order_medicine
-            constraintName: fk_order_medicine_fk
+            baseTableName: order_cart
+            constraintName: fk_order_cart_fk
             deferrable: true
             initiallyDeferred: true
             onDelete: NO ACTION
@@ -195,12 +218,12 @@ databaseChangeLog:
             referencedColumnNames: id_order
             referencedTableName: orders
         - addForeignKeyConstraint:
-            baseColumnNames: id_medicine
-            baseTableName: orders_medicine
-            constraintName: fk_orders_medicine_fk_prime
+            baseColumnNames: id_cart
+            baseTableName: order_cart
+            constraintName: fk_orders_cart_fk_prime
             deferrable: true
             initiallyDeferred: true
             onDelete: NO ACTION
             onUpdate: NO ACTION
-            referencedColumnNames: id_medicine
-            referencedTableName: medicine
+            referencedColumnNames: id_cart
+            referencedTableName: cart

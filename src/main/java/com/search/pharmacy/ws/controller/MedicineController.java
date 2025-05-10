@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +28,7 @@ public class MedicineController {
   private final ObjectMapper objectMapper;
 
   @PostMapping
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity<MedicineDTO> createMedicine(
           @ModelAttribute MedicineDTO medicineDTO, @RequestPart MultipartFile file) throws Exception {
     log.debug("[ENDPOINT] request to create a medicine : {}", medicineDTO.getName());
@@ -66,6 +68,7 @@ public class MedicineController {
   }
 
   @PatchMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity<MedicineDetailDTO> updateMedicine(
           @PathVariable(value = "id") Long id,
           @RequestParam(required = false) Map<String, Object> fields,
@@ -75,6 +78,7 @@ public class MedicineController {
   }
 
   @DeleteMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity<Void> deleteMedicine(@PathVariable(value = "id") Long medicineId) {
     log.info("[ENDPOINT] Received request to delete medicine with id {}", medicineId);
 

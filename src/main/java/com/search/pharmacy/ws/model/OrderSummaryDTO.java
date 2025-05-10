@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 public class OrderSummaryDTO {
 
-    private List<MedicineListDTO> medicines;
+    private List<CartDTO> carts;
     private UserDTO user;
 
     @NotNull(message = "status cannot be null")

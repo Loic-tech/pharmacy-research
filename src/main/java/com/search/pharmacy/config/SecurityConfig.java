@@ -1,10 +1,10 @@
 package com.search.pharmacy.config;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -17,19 +17,32 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 @EnableMethodSecurity
+@Slf4j
 public class SecurityConfig {
 
   private final AuthenticationProvider authenticationProvider;
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
+  private final JwtService jwtTokenProvider;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
     http.csrf(AbstractHttpConfigurer::disable)
-        .authorizeHttpRequests(authorize ->
+        .authorizeHttpRequests(
+            authorize ->
                 authorize
-                        .requestMatchers("/users/**", "/categories/**", "/subcategories/**", "/medicine/**", "/roles/**").permitAll()
-                        .anyRequest().authenticated())
+                    .requestMatchers(
+                        "/users/**",
+                        "/categories/**",
+                        "/subcategories/**",
+                        "/medicine/**",
+                        "/roles/**",
+                        "/oauth2/**",
+                        "/css/**",
+                        "/js/**")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authenticationProvider(authenticationProvider)
@@ -37,6 +50,4 @@ public class SecurityConfig {
 
     return http.build();
   }
-
-
 }

@@ -33,19 +33,21 @@ public class UserController {
   }
 
   @GetMapping
-  @PreAuthorize("hasRole('ROLE_USER')")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity<List<UserDTO>> getUsers() {
     log.debug("[ENDPOINT] request to get all users");
     return ResponseEntity.ok(userService.getUsers());
   }
 
   @GetMapping("/{id}")
+  @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
   public ResponseEntity<UserDTO> getUser(@PathVariable(value = "id") Long id) {
     log.debug("[ENDPOINT] request to get user with id {}", id);
     return ResponseEntity.ok(userService.getUser(id));
   }
 
   @DeleteMapping("/{id}")
+  @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
   public ResponseEntity<Void> deleteUser(@PathVariable(value = "id") Long userId) {
     log.info("[ENDPOINT] Received request to delete user with id {}", userId);
     userService.delete(userId);
@@ -53,6 +55,7 @@ public class UserController {
   }
 
   @PatchMapping("/{id}")
+  @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
   public ResponseEntity<UserDTO> updateUser(
       @PathVariable Long id, @RequestParam(required = false) Map<String, Object> fields) {
     log.info("[ENDPOINT] Received request to update user with id {}", id);

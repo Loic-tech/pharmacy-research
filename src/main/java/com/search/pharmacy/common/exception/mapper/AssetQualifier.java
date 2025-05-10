@@ -3,6 +3,7 @@ package com.search.pharmacy.common.exception.mapper;
 import com.search.pharmacy.domain.model.Category;
 import com.search.pharmacy.domain.model.Medicine;
 import com.search.pharmacy.domain.model.SubCategory;
+import com.search.pharmacy.domain.model.User;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 
@@ -40,5 +41,15 @@ public class AssetQualifier {
             medicine.setId(id);
         }
         return medicine;
+    }
+
+    @Named("IdToUser")
+    public User idToUser(Long id) {
+        User user = null;
+        if (!Objects.isNull(id)) {
+            user = new User();
+            user.setId(id);
+        }
+        return user;
     }
 }

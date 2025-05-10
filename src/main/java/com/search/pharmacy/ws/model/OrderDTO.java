@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class OrderDTO {
 
   private Long id;
-  private List<Long> medicinesIds;
+  private List<CartDTO> cart;
 
   private Long userId;
 
