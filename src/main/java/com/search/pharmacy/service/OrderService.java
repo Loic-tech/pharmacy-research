@@ -1,18 +1,19 @@
 package com.search.pharmacy.service;
 
 import com.search.pharmacy.common.exception.orm.UnauthenticatedUserException;
-import com.search.pharmacy.repository.CartRepository;
+import com.search.pharmacy.domain.model.Medicine;
+import com.search.pharmacy.domain.model.Order;
+import com.search.pharmacy.domain.model.OrderLine;
+import com.search.pharmacy.domain.model.User;
+import com.search.pharmacy.repository.MedicineRepository;
 import com.search.pharmacy.repository.OrderRepository;
-import com.search.pharmacy.ws.mapper.OrderMapper;
-import com.search.pharmacy.ws.mapper.OrderSummaryMapper;
+import com.search.pharmacy.repository.UserRepository;
+import com.search.pharmacy.ws.mapper.MedicineMapper;
+import com.search.pharmacy.ws.mapper.UserMapper;
 import com.search.pharmacy.ws.model.*;
-
-import java.beans.Transient;
-import java.time.LocalDateTime;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,48 +30,41 @@ import org.springframework.stereotype.Service;
 public class OrderService {
 
   private final OrderRepository orderRepository;
-  private final OrderMapper orderMapper;
-  private final OrderSummaryMapper orderSummaryMapper;
   private final OAuth2AuthorizedClientManager authorizedClientManager;
-  private final CartRepository cartRepository;
+  private final UserRepository userRepository;
+  private final MedicineRepository medicineRepository;
 
   @Transactional
-  public OrderSummaryDTO createOrder(OrderDTO orderDTO) {
-    calculateTotalAmount(orderDTO);
-    return Optional.of(orderDTO)
-        .map(this::calculateTotalAmount)
-        .map(orderMapper::toEntity)
-            .map(order -> {
-                cartRepository.saveAll(order.getCarts());
-              return order;
-            })
-        .map(orderRepository::save)
-        .map(orderSummaryMapper::toDTO)
-        .orElseThrow(() -> new UnauthenticatedUserException("Could not create a new order"));
+  public Order createOrder(OrderDTO orderDTO, List<OrderLineDTO> orderLines) {
+    Order order = new Order();
+
+    Optional<User> optionalUser = userRepository.findById(orderDTO.getUserId());
+    optionalUser.ifPresent(order::setUser);
+
+    order.setAddress(orderDTO.getAddress());
+    order.setStatus(Order.OrderStatus.valueOf(orderDTO.getStatus()));
+    order.setPhoneNumber(orderDTO.getPhoneNumber());
+    order.setComment(orderDTO.getComment());
+
+    Order savedOrder = orderRepository.save(order);
+
+    for (OrderLineDTO orderLineDTO : orderLines) {
+      Optional<Medicine> medicine =
+          Optional.ofNullable(
+              medicineRepository
+                  .findById(orderLineDTO.getMedicineId())
+                  .orElseThrow(RuntimeException::new));
+
+      OrderLine orderLine =
+          OrderLine.builder().medicine(medicine.get()).quantity(orderLineDTO.getQuantity()).build();
+
+      savedOrder.addOrderLine(orderLine);
+    }
+    return orderRepository.save(savedOrder);
   }
 
-  public List<OrderSummaryDTO> getOrders() {
-    return orderRepository.findAll().stream().map(orderSummaryMapper::toDTO).toList();
-  }
-
-  public OrderDTO calculateTotalAmount(OrderDTO orderDTO) {
-    if (orderDTO.getCart() == null || orderDTO.getCart().isEmpty()) {
-      orderDTO.setTotalAmount(0.0);
-    }
-
-    double total = 0.0;
-    for (CartDTO cartItem : orderDTO.getCart()) {
-      MedicineListDTO medicine = cartItem.getMedicine();
-      Integer quantity = cartItem.getQuantity();
-
-      if (medicine != null && medicine.getNewPrice() != null && quantity != null) {
-        total += medicine.getNewPrice() * quantity;
-      }
-    }
-
-    orderDTO.setTotalAmount(total);
-    orderDTO.setOrderDate(LocalDateTime.now());
-    return orderDTO;
+  public List<Order> getOrders() {
+    return orderRepository.findAll();
   }
 
   public String getCurrentUserToken() {

@@ -53,12 +53,12 @@ public class Medicine extends AbstractEntity<Long> {
   @ToString.Include
   private Double OldPrice;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "id_category", nullable = false)
   @ToString.Include
   private Category category;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "ID_SUB_CATEGORY")
   @EqualsAndHashCode.Include
   @ToString.Include

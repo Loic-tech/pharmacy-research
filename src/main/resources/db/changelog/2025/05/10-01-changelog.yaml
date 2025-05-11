@@ -1,0 +1,364 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1746913470445-1
+      author: l.gnagoh
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_categories
+                  name: id_category
+                  type: BIGINT
+                  autoIncrement: true
+              - column:
+                  name: created_date
+                  type: DATETIME
+              - column:
+                  name: last_modified_date
+                  type: DATETIME
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+            tableName: categories
+  - changeSet:
+      id: 1746913470445-2
+      author: l.gnagoh
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_medicine
+                  name: id_medicine
+                  type: BIGINT
+                  autoIncrement: true
+              - column:
+                  name: created_date
+                  type: DATETIME
+              - column:
+                  name: last_modified_date
+                  type: DATETIME
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: small_description
+                  type: VARCHAR(255)
+              - column:
+                  name: url
+                  type: VARCHAR(255)
+              - column:
+                  name: reference
+                  type: VARCHAR(255)
+              - column:
+                  name: quantity
+                  type: INT
+              - column:
+                  name: complete_description
+                  type: VARCHAR(255)
+              - column:
+                  name: using_advice
+                  type: VARCHAR(255)
+              - column:
+                  name: composition
+                  type: VARCHAR(255)
+              - column:
+                  name: new_price
+                  type: DOUBLE
+              - column:
+                  name: old_price
+                  type: DOUBLE
+              - column:
+                  constraints:
+                    nullable: false
+                  name: id_category
+                  type: BIGINT
+              - column:
+                  name: id_sub_category
+                  type: BIGINT
+            tableName: medicine
+  - changeSet:
+      id: 1746913470445-3
+      author: l.gnagoh
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_order_line
+                  name: id_order_line
+                  type: BIGINT
+                  autoIncrement: true
+              - column:
+                  name: created_date
+                  type: DATETIME
+              - column:
+                  name: last_modified_date
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: id_medicine
+                  type: BIGINT
+              - column:
+                  name: quantity
+                  type: INT
+              - column:
+                  name: order_id_order
+                  type: BIGINT
+            tableName: order_line
+  - changeSet:
+      id: 1746913470445-4
+      author: l.gnagoh
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_orders
+                  name: id_order
+                  type: BIGINT
+              - column:
+                  name: order_number
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: id_user
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: status
+                  type: VARCHAR(255)
+              - column:
+                  name: total_amount
+                  type: DOUBLE
+              - column:
+                  name: address
+                  type: VARCHAR(255)
+              - column:
+                  name: phone_number
+                  type: VARCHAR(255)
+              - column:
+                  name: comment
+                  type: VARCHAR(255)
+              - column:
+                  name: order_date
+                  type: DATETIME
+            tableName: orders
+  - changeSet:
+      id: 1746913470445-5
+      author: l.gnagoh
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_roles
+                  name: id_role
+                  type: BIGINT
+                  autoIncrement: true
+              - column:
+                  name: created_date
+                  type: DATETIME
+              - column:
+                  name: last_modified_date
+                  type: DATETIME
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+            tableName: roles
+  - changeSet:
+      id: 1746913470445-6
+      author: l.gnagoh
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_sub_categories
+                  name: id_sub_category
+                  type: BIGINT
+                  autoIncrement: true
+              - column:
+                  name: created_date
+                  type: DATETIME
+              - column:
+                  name: last_modified_date
+                  type: DATETIME
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: id_category
+                  type: BIGINT
+            tableName: sub_categories
+  - changeSet:
+      id: 1746913470445-7
+      author: l.gnagoh
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_users
+                  name: id_user
+                  type: BIGINT
+                  autoIncrement: true
+              - column:
+                  name: created_date
+                  type: DATETIME
+              - column:
+                  name: last_modified_date
+                  type: DATETIME
+              - column:
+                  name: firstname
+                  type: VARCHAR(255)
+              - column:
+                  name: lastname
+                  type: VARCHAR(255)
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+            tableName: users
+  - changeSet:
+      id: 1746913470445-8
+      author: l.gnagoh
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_users_roles
+                  name: id_role
+                  type: BIGINT
+                  autoIncrement: true
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_users_roles
+                  name: id_user
+                  type: BIGINT
+            tableName: users_roles
+  - changeSet:
+      id: 1746913470445-9
+      author: l.gnagoh
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: id_category
+            baseTableName: medicine
+            constraintName: FK_MEDICINE_ON_ID_CATEGORY
+            referencedColumnNames: id_category
+            referencedTableName: categories
+  - changeSet:
+      id: 1746913470445-10
+      author: l.gnagoh
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: id_sub_category
+            baseTableName: medicine
+            constraintName: FK_MEDICINE_ON_ID_SUB_CATEGORY
+            referencedColumnNames: id_sub_category
+            referencedTableName: sub_categories
+  - changeSet:
+      id: 1746913470445-11
+      author: l.gnagoh
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: id_user
+            baseTableName: orders
+            constraintName: FK_ORDERS_ON_ID_USER
+            referencedColumnNames: id_user
+            referencedTableName: users
+  - changeSet:
+      id: 1746913470445-12
+      author: l.gnagoh
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: id_medicine
+            baseTableName: order_line
+            constraintName: FK_ORDER_LINE_ON_ID_MEDICINE
+            referencedColumnNames: id_medicine
+            referencedTableName: medicine
+  - changeSet:
+      id: 1746913470445-13
+      author: l.gnagoh
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: order_id_order
+            baseTableName: order_line
+            constraintName: FK_ORDER_LINE_ON_ORDER_ID_ORDER
+            referencedColumnNames: id_order
+            referencedTableName: orders
+  - changeSet:
+      id: 1746913470445-14
+      author: l.gnagoh
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: id_category
+            baseTableName: sub_categories
+            constraintName: FK_SUB_CATEGORIES_ON_ID_CATEGORY
+            referencedColumnNames: id_category
+            referencedTableName: categories
+  - changeSet:
+      id: 1746913470445-15
+      author: l.gnagoh
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: id_role
+            baseTableName: users_roles
+            constraintName: fk_userol_on_roles
+            referencedColumnNames: id_role
+            referencedTableName: roles
+  - changeSet:
+      id: 1746913470445-16
+      author: l.gnagoh
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: id_user
+            baseTableName: users_roles
+            constraintName: fk_userol_on_user
+            referencedColumnNames: id_user
+            referencedTableName: users
+

@@ -1,9 +1,12 @@
 package com.search.pharmacy.ws.controller;
 
 import com.search.pharmacy.common.exception.orm.UnauthenticatedUserException;
+import com.search.pharmacy.domain.model.Order;
 import com.search.pharmacy.service.OrderService;
 import com.search.pharmacy.service.TokenStorageService;
+import com.search.pharmacy.ws.model.CreateOrderRequest;
 import com.search.pharmacy.ws.model.OrderDTO;
+import com.search.pharmacy.ws.model.OrderLineDTO;
 import com.search.pharmacy.ws.model.OrderSummaryDTO;
 import java.util.HashMap;
 import java.util.List;
@@ -25,23 +28,12 @@ public class OrderController {
 
   @PostMapping
   @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-  public ResponseEntity<?> createOrder(@RequestBody OrderDTO orderDTO) {
-    try {
-      OrderSummaryDTO createdOrder = orderService.createOrder(orderDTO);
+  public ResponseEntity<?> createOrder(@RequestBody CreateOrderRequest request) {
+     Order createdOrder = orderService.createOrder(request.getOrder(), request.getOrderLines());
       return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder);
-    } catch (UnauthenticatedUserException e) {
-      String orderToken = UUID.randomUUID().toString();
-      tokenStorageService.storeOrder(orderToken, orderDTO);
-      Map<String, Object> response = new HashMap<>();
-      response.put("message", "Authentication required");
-      response.put("orderToken", orderToken);
-      response.put("authUrl", "https://accounts.google.com/o/oauth2/auth");
-
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-    }
   }
 
-  @PostMapping("/after-auth")
+/*  @PostMapping("/after-auth")
   public ResponseEntity<?> completeOrder(@RequestParam String orderToken) {
     // Récupérer la commande stockée temporairement
     OrderDTO pendingOrder = tokenStorageService.retrieveOrder(orderToken);
@@ -58,11 +50,11 @@ public class OrderController {
     OrderSummaryDTO createdOrder = orderService.createOrder(pendingOrder);
 
     return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder);
-  }
+  }*/
 
   @GetMapping
   @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public ResponseEntity<List<OrderSummaryDTO>> getOrders() {
+  public ResponseEntity<List<Order>> getOrders() {
     return ResponseEntity.ok(orderService.getOrders());
   }
 }

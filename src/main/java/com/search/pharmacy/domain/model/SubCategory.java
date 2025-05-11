@@ -17,7 +17,7 @@ public class SubCategory extends AbstractEntity<Long> {
   @ToString.Include
   private String name;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "id_category", nullable = false)
   @ToString.Include
   private Category category;

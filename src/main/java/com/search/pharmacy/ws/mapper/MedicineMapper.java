@@ -4,6 +4,7 @@ import com.search.pharmacy.common.exception.mapper.AssetQualifier;
 import com.search.pharmacy.common.exception.orm.AbstractMapper;
 import com.search.pharmacy.domain.model.Medicine;
 import com.search.pharmacy.ws.model.MedicineDTO;
+import com.search.pharmacy.ws.model.MedicineListDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -39,6 +40,14 @@ public interface MedicineMapper extends AbstractMapper<Medicine, MedicineDTO> {
       source = "idSubCategory",
       qualifiedByName = {"AssetQualifier", "IdToSubCategory"})
   Medicine toEntity(MedicineDTO dto);
+
+
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "category", ignore = true)
+  @Mapping(target = "name", source = "dto.name")
+  @Mapping(target = "url", source = "dto.url")
+  @Mapping(target = "newPrice", source = "dto.newPrice")
+  Medicine toDetailEntity(MedicineListDTO dto);
 
   @Mapping(target = "id", ignore = true)
   Medicine updateFromDTO(final MedicineDTO dto, @MappingTarget Medicine entity);

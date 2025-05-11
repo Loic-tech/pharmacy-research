@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 public class OrderDTO {
 
   private Long id;
-  private List<CartDTO> cart;
 
   private Long userId;
 
