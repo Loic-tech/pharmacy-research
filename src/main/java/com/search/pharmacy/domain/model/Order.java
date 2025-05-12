@@ -32,7 +32,7 @@ public class Order {
   @JsonManagedReference
   private List<OrderLine> orderLines = new ArrayList<>();
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "id_user")
   @ToString.Include
   private User user;
