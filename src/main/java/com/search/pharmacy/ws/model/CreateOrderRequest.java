@@ -1,15 +1,17 @@
 package com.search.pharmacy.ws.model;
 
+import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @lombok.Data
 public class CreateOrderRequest {
-    private OrderDTO order;
-    private List<OrderLineDTO> orderLines;
+  @NotNull(message = "order cannot be null")
+  private OrderDTO order;
 
+  @NotNull(message = "orderLines cannot be null")
+  private List<OrderLineDTO> orderLines;
 }
