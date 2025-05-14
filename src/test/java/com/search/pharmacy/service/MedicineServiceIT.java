@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.search.pharmacy.domain.model.Medicine;
 import com.search.pharmacy.repository.MedicineRepository;
 import com.search.pharmacy.ws.model.MedicineDTO;
+import com.search.pharmacy.ws.model.MedicineListDTO;
 import java.util.List;
 import org.junit.Rule;
 import org.junit.Test;
@@ -12,9 +13,11 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.multipart.MultipartFile;
 
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -25,8 +28,7 @@ public class MedicineServiceIT {
 
   @Autowired private MedicineService sut;
   @Rule public ExpectedException thrown = ExpectedException.none();
-  @Autowired
-  private MedicineRepository medicineRepository;
+  @Autowired private MedicineRepository medicineRepository;
 
   @Test
   @Sql(scripts = "classpath:service/test_it_medicine_service.sql")
@@ -34,17 +36,22 @@ public class MedicineServiceIT {
       scripts = "classpath:service/dropTestData.sql",
       executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
   public void should_return_all_medicines() {
+    // given
+    int page = 0;
+    int size = 10;
+
     // When
-    List<MedicineDTO> actual = sut.getMedicines();
+    List<MedicineListDTO> actual = sut.getMedicines(page, size);
 
     // Then
-    assertThat(actual).hasSize(3);
+    assertThat(actual).hasSize(2);
+    assertThat(actual.get(0).getName()).isEqualTo("Doliprane");
+    assertThat(actual.get(1).getName()).isEqualTo("Fervex");
   }
 
   @Test
   public void should_create_medicine() {
     // Given
-    MedicineDTO expected = MedicineDTO.builder().name("Fervex").description("douleurs").build();
 
     // When
     MedicineDTO actual = sut.create(expected);
@@ -93,8 +100,8 @@ public class MedicineServiceIT {
   @Test
   @Sql(scripts = "classpath:service/test_it_medicine_service.sql")
   @Sql(
-          scripts = "classpath:service/dropTestData.sql",
-          executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+      scripts = "classpath:service/dropTestData.sql",
+      executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
   public void should_delete_medicine() {
     // Given
     Long medicineId = 2L;

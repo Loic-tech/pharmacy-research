@@ -1,2 +1,2 @@
-DELETE FROM pharmacy;
 DELETE FROM medicine;
+DELETE FROM categories;
