@@ -5,8 +5,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.search.pharmacy.domain.model.Medicine;
 import com.search.pharmacy.repository.MedicineRepository;
 import com.search.pharmacy.ws.model.MedicineDTO;
+import com.search.pharmacy.ws.model.MedicineDetailDTO;
 import com.search.pharmacy.ws.model.MedicineListDTO;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -17,7 +20,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.multipart.MultipartFile;
 
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -50,16 +52,42 @@ public class MedicineServiceIT {
   }
 
   @Test
-  public void should_create_medicine() {
+  @Sql(scripts = "classpath:service/test_it_medicine_service.sql")
+  @Sql(
+      scripts = "classpath:service/dropTestData.sql",
+      executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+  public void should_create_medicine() throws Exception {
     // Given
+    String content = "Doliprane";
+    MockMultipartFile mockMultipartFile =
+        new MockMultipartFile("file", "test.txt", "text/plain", content.getBytes());
+    MedicineDTO expected =
+        MedicineDTO.builder()
+            .name("Doliprane")
+            .smallDescription("smallDescription")
+            .completeDescription("completeDescription")
+            .composition("composition")
+            .oldPrice(10.60)
+            .newPrice(10.60)
+            .quantity(54)
+            .usingAdvice("advice")
+            .idCategory(1L)
+            .build();
 
     // When
-    MedicineDTO actual = sut.create(expected);
+    MedicineDTO actual = sut.create(expected, mockMultipartFile);
 
     // Then
     assertThat(actual).isNotNull();
-    assertThat(actual.getName()).isEqualTo("Fervex");
-    assertThat(actual.getDescription()).isEqualTo("douleurs");
+    assertThat(actual.getName()).isEqualTo("Doliprane");
+    assertThat(actual.getSmallDescription()).isEqualTo("smallDescription");
+    assertThat(actual.getCompleteDescription()).isEqualTo("completeDescription");
+    assertThat(actual.getComposition()).isEqualTo("composition");
+    assertThat(actual.getOldPrice()).isEqualTo(10.60);
+    assertThat(actual.getNewPrice()).isEqualTo(10.60);
+    assertThat(actual.getQuantity()).isEqualTo(54);
+    assertThat(actual.getIdCategory()).isEqualTo(1L);
+    assertThat(actual.getUrl()).isEqualTo("http://localhost:9000/test-images/test.txt");
   }
 
   @Test
@@ -70,12 +98,13 @@ public class MedicineServiceIT {
   public void should_return_medicine_by_id() {
 
     // When
-    MedicineDTO actual = sut.getMedicine(2L);
+    MedicineDetailDTO actual = sut.getMedicine(2L);
 
     // Then
     assertThat(actual).isNotNull();
-    assertThat(actual.getName()).isEqualTo("Artrine");
-    assertThat(actual.getDescription()).isEqualTo("Malaria");
+    assertThat(actual.getName()).isEqualTo("Fervex");
+    assertThat(actual.getSmallDescription()).isEqualTo("ma petite description 2");
+    assertThat(actual.getUrl()).isEqualTo("http://localhost:9000/test-images/image-1.png");
   }
 
   @Test
@@ -85,16 +114,18 @@ public class MedicineServiceIT {
       executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
   public void should_update_medicine() {
     // Given
-    MedicineDTO patchMedicineDTO =
-        MedicineDTO.builder().name("Fervex").description("douleurs").build();
+    Long id = 2L;
+    Map<String, Object> fields = new HashMap<>();
+    fields.put("name", "Doliprane");
+    fields.put("composition", "the new composition");
 
     // When
-    MedicineDTO actual = sut.update(2L, patchMedicineDTO);
+    MedicineDetailDTO actual = sut.update(id, fields, null);
 
     // then
     assertThat(actual).isNotNull();
-    assertThat(actual.getName()).isEqualTo("Fervex");
-    assertThat(actual.getDescription()).isEqualTo("douleurs");
+    assertThat(actual.getName()).isEqualTo("Doliprane");
+    assertThat(actual.getComposition()).isEqualTo("the new composition");
   }
 
   @Test
@@ -111,6 +142,6 @@ public class MedicineServiceIT {
 
     // Then
     List<Medicine> actual = medicineRepository.findAll();
-    assertThat(actual).hasSize(2);
+    assertThat(actual).hasSize(1);
   }
 }

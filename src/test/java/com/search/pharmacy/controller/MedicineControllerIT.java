@@ -3,33 +3,38 @@ package com.search.pharmacy.controller;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jackson.JsonLoader;
 import com.github.fge.jsonpatch.JsonPatch;
-import com.search.pharmacy.ws.model.MedicineDTO;
 import io.restassured.http.ContentType;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     properties = "spring.profiles.active=test")
-@WithMockUser
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class MedicineControllerIT {
 
   @LocalServerPort private int port;
   @Autowired ObjectMapper objectMapper;
+
 
   @Test
   @Sql(scripts = "classpath:service/test_it_medicine_service.sql")
@@ -47,7 +52,7 @@ public class MedicineControllerIT {
         .then()
         .statusCode(200)
         .contentType(ContentType.JSON)
-        .body("size()", is(3));
+        .body("size()", is(2));
   }
 
   @Test
@@ -55,24 +60,40 @@ public class MedicineControllerIT {
   @Sql(
       scripts = "classpath:service/dropTestData.sql",
       executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-  public void should_create_medicine() {
+  @WithMockUser(roles = "ADMIN")
+  public void should_create_medicine() throws IOException {
     // given
     String uri = "/medicine";
 
-    MedicineDTO medicineDTO =
-        MedicineDTO.builder().name("propranolol").description("Maux de tête").build();
+    String content = "Doliprane";
+    MockMultipartFile mockMultipartFile =
+        new MockMultipartFile("file", "test.txt", "text/plain", content.getBytes());
+
+    Map<String, Object> fields = new HashMap<>();
+    fields.put("name", "propranolol");
+    fields.put("smallDescription", "Maux de tête");
+    fields.put("completeDescription", "my complete description");
+    fields.put("newPrice", 100.0);
+    fields.put("oldPrice", 120.0);
+    fields.put("quantity", 50);
+    fields.put("usingAdvice", "my advice");
+    fields.put("composition", "my composition");
+    fields.put("idCategory", 1);
 
     given()
-        .body(medicineDTO)
-        .contentType(ContentType.JSON)
+        .multiPart("medicineDTO", fields)
+        .multiPart("file", "file.txt", mockMultipartFile.getInputStream())
         .post(buildURL(uri))
         .prettyPeek()
         .then()
         //
+        .statusCode(HttpStatus.OK.value())
         .contentType(ContentType.JSON)
         .body("id", is(4))
         .body("name", is("propranolol"))
-        .body("description", is("Maux de tête"));
+        .body("smallDescription", is("Maux de tête"))
+        .body("completeDescription", is("my complete description"))
+        .body("newPrice", is(100.0));
   }
 
   @Test

@@ -10,7 +10,7 @@ public class MinioConfiguration {
   @Bean
   public MinioClient getMinioClient() {
     return new MinioClient.Builder()
-        .credentials("LVcaPzsOxiAMxpEQ", "PDyTgPlebuJyjrfsQYcarNw3qj6Rlr8F")
+        .credentials("YMRxrDr4iuA3BgPe", "Qnkzj42WFpZVSgmdMJt1JSTWny47rcoh")
             .endpoint("http://localhost:9000")
         .build();
   }
