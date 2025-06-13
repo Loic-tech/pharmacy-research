@@ -25,6 +25,7 @@ public class MedicineDTO {
   @NotNull(message = "quantity for the drug should not be null")
   private Integer quantity;
 
+  @NotNull(message = "new price for the drug should not be null")
   private Double newPrice;
 
   private Double oldPrice;

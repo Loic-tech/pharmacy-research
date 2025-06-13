@@ -10,8 +10,8 @@ public class MinioConfiguration {
   @Bean
   public MinioClient getMinioClient() {
     return new MinioClient.Builder()
-        .credentials("YMRxrDr4iuA3BgPe", "Qnkzj42WFpZVSgmdMJt1JSTWny47rcoh")
-            .endpoint("http://localhost:9000")
+        .credentials("PBIiMiLa0pfy4A3G", "n1cDeupaGxQ9zSZRnglYIdxMN1NBB6PJ")
+            .endpoint("https://minio.pharmadoc-ci.com/")
         .build();
   }
 }

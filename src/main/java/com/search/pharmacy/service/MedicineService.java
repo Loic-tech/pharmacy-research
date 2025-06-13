@@ -50,10 +50,9 @@ public class MedicineService {
             });
   }
 
-  public List<MedicineListDTO> getMedicines(int page, int size) {
-    return medicineRepository.findAll(Pageable.ofSize(size).withPage(page)).stream()
-        .map(medicineListMapper::toListDTO)
-        .toList();
+  public Page<MedicineListDTO> getMedicines(int page, int size) {
+    return medicineRepository.findAll(Pageable.ofSize(size).withPage(page))
+        .map(medicineListMapper::toListDTO);
   }
 
   public Page<MedicineListDTO> getMedicinesByCategory(Long categoryId, int page, int size) {

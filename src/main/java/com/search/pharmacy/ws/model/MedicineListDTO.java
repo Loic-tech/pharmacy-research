@@ -16,4 +16,5 @@ public class MedicineListDTO {
   private String name;
   private String url;
   private Double newPrice;
+  private Double oldPrice;
 }

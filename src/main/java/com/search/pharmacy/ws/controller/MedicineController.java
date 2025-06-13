@@ -36,7 +36,7 @@ public class MedicineController {
   }
 
   @GetMapping(produces = APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<MedicineListDTO>> getMedicines(
+  public ResponseEntity<Page<MedicineListDTO>> getMedicines(
           @RequestParam(required = false, defaultValue = "0") int page,
           @RequestParam(required = false, defaultValue = "10") int size) {
     log.debug("[ENDPOINT] request to get all medicines :");

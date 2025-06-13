@@ -39,7 +39,13 @@ public class SecurityConfig {
                         "/roles/**",
                         "/oauth2/**",
                         "/css/**",
-                        "/js/**")
+                        "/js/**",
+                        "/v3/api-docs/**",
+                        "/configuration/ui/**",
+                        "/swagger-resources/**",
+                        "/configuration/security/**",
+                        "/swagger-ui/**",
+                        "/webjars/**")
                     .permitAll()
                     .anyRequest()
                     .authenticated())

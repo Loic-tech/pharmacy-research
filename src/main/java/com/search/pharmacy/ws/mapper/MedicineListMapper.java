@@ -14,5 +14,6 @@ public interface MedicineListMapper extends AbstractMapper<Medicine, MedicineLis
     @Mapping(target = "name", source = "entity.name")
     @Mapping(target = "url", source = "entity.url")
     @Mapping(target = "newPrice", source = "entity.newPrice")
+    @Mapping(target = "oldPrice", source = "entity.oldPrice")
     MedicineListDTO toListDTO(final Medicine entity);
 }
