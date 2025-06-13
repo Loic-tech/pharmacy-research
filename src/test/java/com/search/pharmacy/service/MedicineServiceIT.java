@@ -16,6 +16,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
@@ -43,12 +44,12 @@ public class MedicineServiceIT {
     int size = 10;
 
     // When
-    List<MedicineListDTO> actual = sut.getMedicines(page, size);
+    Page<MedicineListDTO> actual = sut.getMedicines(page, size);
 
     // Then
     assertThat(actual).hasSize(2);
-    assertThat(actual.get(0).getName()).isEqualTo("Doliprane");
-    assertThat(actual.get(1).getName()).isEqualTo("Fervex");
+    assertThat(actual.getContent().get(0).getName()).isEqualTo("Doliprane");
+    assertThat(actual.getContent().get(1).getName()).isEqualTo("Fervex");
   }
 
   @Test
@@ -87,7 +88,7 @@ public class MedicineServiceIT {
     assertThat(actual.getNewPrice()).isEqualTo(10.60);
     assertThat(actual.getQuantity()).isEqualTo(54);
     assertThat(actual.getIdCategory()).isEqualTo(1L);
-    assertThat(actual.getUrl()).isEqualTo("http://localhost:9000/test-images/test.txt");
+    assertThat(actual.getUrl()).isEqualTo("https://minio.pharmadoc-ci.com/test-images/test.txt");
   }
 
   @Test
