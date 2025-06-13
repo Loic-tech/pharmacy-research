@@ -214,5 +214,6 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>pharmadoc</finalName>
     </build>
 </project>
