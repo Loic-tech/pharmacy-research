@@ -57,7 +57,7 @@ public class UserController {
   @PatchMapping("/{id}")
   @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
   public ResponseEntity<UserDTO> updateUser(
-      @PathVariable Long id, @RequestParam(required = false) Map<String, Object> fields) {
+      @PathVariable Long id, @RequestBody(required = false) Map<String, Object> fields) {
     log.info("[ENDPOINT] Received request to update user with id {}", id);
     return ResponseEntity.ok(userService.update(id, fields));
   }

@@ -38,7 +38,7 @@ public class SubCategoryController {
 
   @PatchMapping("/{id}")
   public ResponseEntity<SubCategoryDTO> updateCategory(
-      @PathVariable Long id, @RequestParam(required = false) Map<String, Object> fields) {
+      @PathVariable Long id, @RequestBody(required = false) Map<String, Object> fields) {
     log.info("[ENDPOINT] Received request to update a sub category with id {}", id);
     return ResponseEntity.ok(subCategoryService.update(id, fields));
   }

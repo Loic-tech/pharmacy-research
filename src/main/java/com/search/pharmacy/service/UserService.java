@@ -64,6 +64,7 @@ public class UserService {
     return userRepository.findById(id).map(userMapper::toDTO).orElseThrow();
   }
 
+  @Transactional
   public UserDTO update(Long id, Map<String, Object> fields) {
     Optional<User> optionalUser = userRepository.findById(id);
     if (optionalUser.isPresent()) {

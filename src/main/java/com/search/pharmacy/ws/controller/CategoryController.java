@@ -37,7 +37,7 @@ public class CategoryController {
 
   @PatchMapping("/{id}")
   public ResponseEntity<CategoryDTO> updateCategory(
-      @PathVariable Long id, @RequestParam(required = false) Map<String, Object> fields) {
+      @PathVariable Long id, @RequestBody(required = false) Map<String, Object> fields) {
     log.info("[ENDPOINT] Received request to update category with id {}", id);
     return ResponseEntity.ok(categoryService.update(id, fields));
   }

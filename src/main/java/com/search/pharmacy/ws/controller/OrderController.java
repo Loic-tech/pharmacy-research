@@ -58,7 +58,7 @@ public class OrderController {
    */
   @PatchMapping("/{orderId}")
   public ResponseEntity<Order> partialUpdateOrder(
-      @PathVariable Long orderId, @RequestBody Map<String, Object> updates) {
+      @PathVariable Long orderId, @RequestBody(required = false) Map<String, Object> updates) {
     if (updates == null || updates.isEmpty()) {
       throw new IllegalArgumentException("Au moins un champ à mettre à jour est requis");
     }
