@@ -88,7 +88,7 @@ public class MedicineServiceIT {
     assertThat(actual.getNewPrice()).isEqualTo(10.60);
     assertThat(actual.getQuantity()).isEqualTo(54);
     assertThat(actual.getIdCategory()).isEqualTo(1L);
-    assertThat(actual.getUrl()).isEqualTo("https://minio.pharmadoc-ci.com/test-images/test.txt");
+    assertThat(actual.getUrl()).isEqualTo("https://images.pharmadoc-ci.com/test-images/test.txt");
   }
 
   @Test
