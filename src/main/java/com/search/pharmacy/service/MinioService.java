@@ -36,6 +36,6 @@ public class MinioService {
   }
 
   private String getPreSignedUrl(String filename) {
-    return "https://minio.pharmadoc-ci.com/test-images/".concat(filename);
+    return "https://images.pharmadoc-ci.com/test-images/".concat(filename);
   }
 }
