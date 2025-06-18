@@ -11,7 +11,7 @@ public class MinioConfiguration {
   public MinioClient getMinioClient() {
     return new MinioClient.Builder()
         .endpoint("http://31.97.153.208:9000")
-        .credentials("aF1DNQQN6dNWl9Gi", "uNPNFltyc35dJMTVvnWock9U7NYlWGpm")
+        .credentials("EDaKX05l81rtkLzs", "CGpoXUcw5fAnIF5q13UTra7SQywEzNcU")
         .build();
   }
 }
