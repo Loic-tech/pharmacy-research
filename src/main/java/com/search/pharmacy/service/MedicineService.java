@@ -50,22 +50,30 @@ public class MedicineService {
             });
   }
 
-  public Page<MedicineListDTO> getMedicines(int page, int size) {
-    return medicineRepository.findAll(Pageable.ofSize(size).withPage(page))
-        .map(medicineListMapper::toListDTO);
-  }
-
-  public Page<MedicineListDTO> getMedicinesByCategory(Long categoryId, int page, int size) {
+  public Page<MedicineListDTO> searchMedicines(
+          String name,
+          Long categoryId,
+          int page,
+          int size
+  ) {
     Pageable pageable = Pageable.ofSize(size).withPage(page);
-    return medicineRepository
-        .findAllByCategory_Id(categoryId, pageable)
-        .map(medicineListMapper::toListDTO);
-  }
 
-  public Page<MedicineListDTO> filterMedicines(String name, int page, int size) {
-    return medicineRepository
-        .findAllByNameIgnoreCaseContaining(name, Pageable.ofSize(size).withPage(page))
-        .map(medicineListMapper::toListDTO);
+    Page<Medicine> medicinesPage;
+
+    if (name != null && !name.trim().isEmpty() && categoryId != null) {
+      medicinesPage = medicineRepository
+              .findAllByNameIgnoreCaseContainingAndCategory_Id(name.trim(), categoryId, pageable);
+    } else if (name != null && !name.trim().isEmpty()) {
+      medicinesPage = medicineRepository
+              .findAllByNameIgnoreCaseContaining(name.trim(), pageable);
+    } else if (categoryId != null) {
+      medicinesPage = medicineRepository
+              .findAllByCategory_Id(categoryId, pageable);
+    } else {
+      medicinesPage = medicineRepository.findAll(pageable);
+    }
+
+    return medicinesPage.map(medicineListMapper::toListDTO);
   }
 
   public MedicineDetailDTO getMedicine(Long medicineId) {

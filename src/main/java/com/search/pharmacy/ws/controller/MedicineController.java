@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -32,36 +33,37 @@ public class MedicineController {
     return ResponseEntity.ok(medicineService.create(medicineDTO, file));
   }
 
-  @GetMapping(produces = APPLICATION_JSON_VALUE)
-  public ResponseEntity<Page<MedicineListDTO>> getMedicines(
-      @RequestParam(required = false, defaultValue = "0") int page,
-      @RequestParam(required = false, defaultValue = "10") int size) {
-    log.debug("[ENDPOINT] request to get all medicines :");
-    return ResponseEntity.ok(medicineService.getMedicines(page, size));
-  }
-
-  @GetMapping(value = "/by-category", produces = APPLICATION_JSON_VALUE)
-  public ResponseEntity<Page<MedicineListDTO>> getMedicinesByCategory(
-      @RequestParam Long categoryId,
-      @RequestParam(required = false, defaultValue = "0") int page,
-      @RequestParam(required = false, defaultValue = "10") int size) {
-    log.debug("[ENDPOINT] request to get all medicines by category : {}", categoryId);
-    return ResponseEntity.ok(medicineService.getMedicinesByCategory(categoryId, page, size));
-  }
-
-  @GetMapping(value = "/search", produces = APPLICATION_JSON_VALUE)
-  public ResponseEntity<Page<MedicineListDTO>> filterMedicines(
-      @RequestParam String name,
-      @RequestParam(required = false, defaultValue = "0") int page,
-      @RequestParam(required = false, defaultValue = "10") int size) {
-    log.debug("[ENDPOINT] request to filter medicines by name : {}", name);
-    return ResponseEntity.ok(medicineService.filterMedicines(name, page, size));
-  }
-
   @GetMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<MedicineDetailDTO> getMedicine(@PathVariable(value = "id") Long id) {
     log.debug("[ENDPOINT] request to get Medicine : {}", id);
     return ResponseEntity.ok(medicineService.getMedicine(id));
+  }
+
+  /**
+   * Endpoint unifié pour rechercher des médicaments
+   * Supporte la recherche par nom, catégorie, ou les deux
+   *
+   * @param name Nom du médicament (optionnel)
+   * @param categoryId ID de la catégorie (optionnel)
+   * @param page Numéro de page (défaut: 0)
+   * @param size Taille de page (défaut: 10)
+   * @return Page de médicaments correspondant aux critères
+   */
+  @GetMapping
+  public ResponseEntity<Page<MedicineListDTO>> getMedicinesBySearchCriteria(
+          @RequestParam(required = false) String name,
+          @RequestParam(required = false) Long categoryId,
+          @RequestParam(defaultValue = "0") int page,
+          @RequestParam(defaultValue = "10") int size) {
+
+    try {
+      Page<MedicineListDTO> medicines = medicineService.searchMedicines(
+              name, categoryId, page, size
+      );
+      return ResponseEntity.ok(medicines);
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
   }
 
   @PatchMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)

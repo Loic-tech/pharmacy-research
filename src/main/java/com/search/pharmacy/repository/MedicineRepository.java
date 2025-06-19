@@ -14,4 +14,6 @@ public interface MedicineRepository extends JpaRepository<Medicine, Long> {
   Page<Medicine> findAllByCategory_Id(Long categoryId, Pageable pageable);
 
   Page<Medicine> findAllByNameIgnoreCaseContaining(String name, Pageable pageable);
+
+    Page<Medicine> findAllByNameIgnoreCaseContainingAndCategory_Id(String trim, Long categoryId, Pageable pageable);
 }

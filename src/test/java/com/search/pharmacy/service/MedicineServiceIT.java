@@ -44,12 +44,50 @@ public class MedicineServiceIT {
     int size = 10;
 
     // When
-    Page<MedicineListDTO> actual = sut.getMedicines(page, size);
+    Page<MedicineListDTO> actual = sut.searchMedicines(null, null, page, size);
 
     // Then
     assertThat(actual).hasSize(2);
     assertThat(actual.getContent().get(0).getName()).isEqualTo("Doliprane");
     assertThat(actual.getContent().get(1).getName()).isEqualTo("Fervex");
+  }
+
+  @Test
+  @Sql(scripts = "classpath:service/test_it_medicine_service.sql")
+  @Sql(
+          scripts = "classpath:service/dropTestData.sql",
+          executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+  public void should_return_all_medicines_by_category() {
+    // given
+    Long categoryId = 1L;
+    int page = 0;
+    int size = 10;
+
+    // When
+    Page<MedicineListDTO> actual = sut.searchMedicines(null, categoryId, page, size);
+
+    // Then
+    assertThat(actual).hasSize(1);
+    assertThat(actual.getContent().get(0).getName()).isEqualTo("Doliprane");
+  }
+
+  @Test
+  @Sql(scripts = "classpath:service/test_it_medicine_service.sql")
+  @Sql(
+          scripts = "classpath:service/dropTestData.sql",
+          executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+  public void should_return_all_medicines_by_name() {
+    // given
+    String name = "doliprane";
+    int page = 0;
+    int size = 10;
+
+    // When
+    Page<MedicineListDTO> actual = sut.searchMedicines(name, null, page, size);
+
+    // Then
+    assertThat(actual).hasSize(1);
+    assertThat(actual.getContent().get(0).getName()).isEqualTo("Doliprane");
   }
 
   @Test
