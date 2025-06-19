@@ -3,7 +3,9 @@ package com.search.pharmacy.service;
 import static com.search.pharmacy.utils.Utils.convertToRoleDTOs;
 
 import com.search.pharmacy.config.JwtService;
+import com.search.pharmacy.domain.model.Roles;
 import com.search.pharmacy.domain.model.User;
+import com.search.pharmacy.repository.RoleRepository;
 import com.search.pharmacy.repository.UserRepository;
 import com.search.pharmacy.ws.mapper.RoleMapper;
 import com.search.pharmacy.ws.mapper.UserMapper;
@@ -29,16 +31,29 @@ public class UserService {
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManager authenticationManager;
   private final JwtService jwtService;
-  private final RoleMapper roleMapper;
+  private final RoleRepository roleRepository;
 
   @Transactional
   public UserDTO create(UserDTO userDTO) {
     userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-    return Optional.of(userDTO)
-        .map(userMapper::toEntity)
+
+    User user = userMapper.toEntity(userDTO);
+    Roles defaultRole =
+        (Roles)
+            roleRepository
+                .findByName("ROLE_USER")
+                .orElseThrow(() -> new RuntimeException("Le rôle ROLE_USER n'existe pas"));
+
+    if (user.getRoles() == null) {
+      user.setRoles(new HashSet<>());
+    }
+
+    user.getRoles().add(defaultRole);
+
+    return Optional.of(user)
         .map(userRepository::save)
         .map(userMapper::toDTO)
-        .orElseThrow(() -> new RuntimeException("Could not create a new user"));
+        .orElseThrow(() -> new RuntimeException("Impossible de créer un nouvel utilisateur"));
   }
 
   public AuthenticatedUserDTO login(LoginUserDTO loginUserDTO) {
