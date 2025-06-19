@@ -33,7 +33,7 @@ public class OrderService {
     optionalUser.ifPresent(order::setUser);
 
     order.setAddress(orderDTO.getAddress());
-    order.setStatus(Order.OrderStatus.valueOf(orderDTO.getStatus()));
+    order.setStatus(Order.OrderStatus.EN_ATTENTE);
     order.setPhoneNumber(orderDTO.getPhoneNumber());
     order.setComment(orderDTO.getComment());
 
