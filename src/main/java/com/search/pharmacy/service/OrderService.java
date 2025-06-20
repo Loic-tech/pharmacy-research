@@ -7,15 +7,12 @@ import com.search.pharmacy.repository.UserRepository;
 import com.search.pharmacy.ws.model.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ReflectionUtils;
 
 @Service
 @RequiredArgsConstructor

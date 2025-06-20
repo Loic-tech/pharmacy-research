@@ -37,6 +37,7 @@ public class SecurityConfig {
                         "/subcategories/**",
                         "/medicine/**",
                         "/roles/**",
+                        "/orders/**",
                         "/oauth2/**",
                         "/css/**",
                         "/js/**",

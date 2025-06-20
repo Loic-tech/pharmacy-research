@@ -7,7 +7,6 @@ import com.search.pharmacy.domain.model.Roles;
 import com.search.pharmacy.domain.model.User;
 import com.search.pharmacy.repository.RoleRepository;
 import com.search.pharmacy.repository.UserRepository;
-import com.search.pharmacy.ws.mapper.RoleMapper;
 import com.search.pharmacy.ws.mapper.UserMapper;
 import com.search.pharmacy.ws.model.AuthenticatedUserDTO;
 import com.search.pharmacy.ws.model.LoginUserDTO;
@@ -63,6 +62,7 @@ public class UserService {
     Optional<User> user = userRepository.findByEmail(loginUserDTO.getEmail());
     String jwtToken = jwtService.generateToken(user.get());
     return AuthenticatedUserDTO.builder()
+        .userId(user.get().getId())
         .email(user.get().getEmail())
         .firstName(user.get().getFirstName())
         .lastName(user.get().getLastName())

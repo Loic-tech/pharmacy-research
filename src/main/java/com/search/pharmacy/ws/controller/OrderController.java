@@ -37,6 +37,7 @@ public class OrderController {
    * @return Commande mise à jour
    */
   @PutMapping("/{orderId}")
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   public ResponseEntity<Order> updateOrder(
       @PathVariable Long orderId,
       @Valid @RequestBody OrderDTO orderDTO,
@@ -57,6 +58,7 @@ public class OrderController {
    * @return Commande mise à jour
    */
   @PatchMapping("/{orderId}")
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
   public ResponseEntity<Order> partialUpdateOrder(
       @PathVariable Long orderId, @RequestBody(required = false) Map<String, Object> updates) {
     if (updates == null || updates.isEmpty()) {
