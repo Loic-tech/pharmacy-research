@@ -24,6 +24,11 @@ public class OrderService {
 
   @Transactional
   public Order createOrder(OrderDTO orderDTO, List<OrderLineDTO> orderLines) {
+
+    if (orderLines.isEmpty()) {
+      throw new IllegalArgumentException("La liste des lignes de commande est vide");
+    }
+
     Order order = new Order();
 
     Optional<User> optionalUser = userRepository.findById(orderDTO.getUserId());
@@ -53,11 +58,14 @@ public class OrderService {
 
   @Transactional
   public Order updateOrder(Long orderId, OrderDTO orderDTO, List<OrderLineDTO> orderLines) {
-    Order existingOrder = orderRepository.findById(orderId)
-            .orElseThrow(() -> new EntityNotFoundException("Commande non trouvée avec l'ID: " + orderId));
+    Order existingOrder =
+        orderRepository
+            .findById(orderId)
+            .orElseThrow(
+                () -> new EntityNotFoundException("Commande non trouvée avec l'ID: " + orderId));
 
-    if (existingOrder.getStatus() == Order.OrderStatus.LIVREE ||
-            existingOrder.getStatus() == Order.OrderStatus.ANNULEE) {
+    if (existingOrder.getStatus() == Order.OrderStatus.LIVREE
+        || existingOrder.getStatus() == Order.OrderStatus.ANNULEE) {
       throw new IllegalStateException("Impossible de modifier une commande déjà livrée ou annulée");
     }
 
@@ -70,7 +78,9 @@ public class OrderService {
     }
 
     if (orderDTO.getUserId() != null) {
-      User user = userRepository.findById(orderDTO.getUserId())
+      User user =
+          userRepository
+              .findById(orderDTO.getUserId())
               .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
       existingOrder.setUser(user);
     }
@@ -81,9 +91,13 @@ public class OrderService {
     List<OrderLine> newOrderLines = new ArrayList<>();
 
     for (OrderLineDTO lineDTO : orderLines) {
-      Medicine medicine = medicineRepository
+      Medicine medicine =
+          medicineRepository
               .findById(lineDTO.getMedicineId())
-              .orElseThrow(() -> new EntityNotFoundException("Médicament non trouvé avec ID: " + lineDTO.getMedicineId()));
+              .orElseThrow(
+                  () ->
+                      new EntityNotFoundException(
+                          "Médicament non trouvé avec ID: " + lineDTO.getMedicineId()));
 
       OrderLine orderLine = new OrderLine();
       orderLine.setMedicine(medicine);
@@ -99,16 +113,19 @@ public class OrderService {
     existingOrder.setOrderLines(newOrderLines);
     existingOrder.setTotalAmount(totalAmount);
 
-      return orderRepository.save(existingOrder);
+    return orderRepository.save(existingOrder);
   }
 
   @Transactional
   public Order partialUpdateOrder(Long orderId, Map<String, Object> updates) {
-    Order existingOrder = orderRepository.findById(orderId)
-            .orElseThrow(() -> new EntityNotFoundException("Commande non trouvée avec l'ID: " + orderId));
+    Order existingOrder =
+        orderRepository
+            .findById(orderId)
+            .orElseThrow(
+                () -> new EntityNotFoundException("Commande non trouvée avec l'ID: " + orderId));
 
-    if (existingOrder.getStatus() == Order.OrderStatus.LIVREE ||
-            existingOrder.getStatus() == Order.OrderStatus.ANNULEE) {
+    if (existingOrder.getStatus() == Order.OrderStatus.LIVREE
+        || existingOrder.getStatus() == Order.OrderStatus.ANNULEE) {
       throw new IllegalStateException("Impossible de modifier une commande déjà livrée ou annulée");
     }
 
@@ -131,7 +148,9 @@ public class OrderService {
 
     if (updates.containsKey("userId")) {
       Long userId = Long.valueOf(updates.get("userId").toString());
-      User user = userRepository.findById(userId)
+      User user =
+          userRepository
+              .findById(userId)
               .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
       existingOrder.setUser(user);
     }
@@ -142,6 +161,10 @@ public class OrderService {
   public List<Order> getOrderByUserId(Long userId) {
     Optional<User> optionalUser = userRepository.findById(userId);
     return optionalUser.map(user -> orderRepository.findAllByUserId(user.getId())).orElse(null);
+  }
+
+  public Order getOrderByOrderNumber(String orderNumber) {
+    return orderRepository.findByOrderNumber(orderNumber);
   }
 
   public List<Order> getOrders() {

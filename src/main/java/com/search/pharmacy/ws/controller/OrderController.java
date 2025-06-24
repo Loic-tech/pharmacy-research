@@ -75,6 +75,12 @@ public class OrderController {
     return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrderByUserId(userId));
   }
 
+  @GetMapping("/order-detail/{orderNumber}")
+  @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+  public ResponseEntity<Order> getOrderByOrderNumber(@PathVariable String orderNumber) {
+    return ResponseEntity.ok(orderService.getOrderByOrderNumber(orderNumber));
+  }
+
   @GetMapping
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity<List<Order>> getOrders() {
