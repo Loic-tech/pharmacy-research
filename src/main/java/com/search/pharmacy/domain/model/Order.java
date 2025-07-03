@@ -57,14 +57,10 @@ public class Order {
   private LocalDateTime orderDate;
 
   public enum OrderStatus {
-    EN_ATTENTE,
-    CONFIRMEE,
     EN_PREPARATION,
-    EXPEDIEE,
+    EXPEDIÉE,
     LIVREE,
-    ANNULEE,
-    RETOURNEE,
-    REMBOURSEE
+    ANNULÉE,
   }
 
   @PrePersist
@@ -80,7 +76,7 @@ public class Order {
     }
 
     if (this.status == null) {
-      this.status = OrderStatus.EN_ATTENTE;
+      this.status = OrderStatus.EN_PREPARATION;
     }
 
     if (this.totalAmount == null) {

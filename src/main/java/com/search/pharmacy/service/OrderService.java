@@ -21,6 +21,7 @@ public class OrderService {
   private final OrderRepository orderRepository;
   private final UserRepository userRepository;
   private final MedicineRepository medicineRepository;
+  private final OrderNotificationService orderNotificationService;
 
   @Transactional
   public Order createOrder(OrderDTO orderDTO, List<OrderLineDTO> orderLines) {
@@ -35,7 +36,7 @@ public class OrderService {
     optionalUser.ifPresent(order::setUser);
 
     order.setAddress(orderDTO.getAddress());
-    order.setStatus(Order.OrderStatus.EN_ATTENTE);
+    order.setStatus(Order.OrderStatus.EN_PREPARATION);
     order.setPhoneNumber(orderDTO.getPhoneNumber());
     order.setComment(orderDTO.getComment());
 
@@ -53,6 +54,7 @@ public class OrderService {
 
       savedOrder.addOrderLine(orderLine);
     }
+    orderNotificationService.sendOrderConfirmationEmail(savedOrder);
     return orderRepository.save(savedOrder);
   }
 
@@ -63,11 +65,6 @@ public class OrderService {
             .findById(orderId)
             .orElseThrow(
                 () -> new EntityNotFoundException("Commande non trouvée avec l'ID: " + orderId));
-
-    if (existingOrder.getStatus() == Order.OrderStatus.LIVREE
-        || existingOrder.getStatus() == Order.OrderStatus.ANNULEE) {
-      throw new IllegalStateException("Impossible de modifier une commande déjà livrée ou annulée");
-    }
 
     existingOrder.setAddress(orderDTO.getAddress());
     existingOrder.setPhoneNumber(orderDTO.getPhoneNumber());
@@ -124,8 +121,7 @@ public class OrderService {
             .orElseThrow(
                 () -> new EntityNotFoundException("Commande non trouvée avec l'ID: " + orderId));
 
-    if (existingOrder.getStatus() == Order.OrderStatus.LIVREE
-        || existingOrder.getStatus() == Order.OrderStatus.ANNULEE) {
+    if (existingOrder.getStatus() == Order.OrderStatus.LIVREE) {
       throw new IllegalStateException("Impossible de modifier une commande déjà livrée ou annulée");
     }
 
