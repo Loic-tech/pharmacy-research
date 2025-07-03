@@ -98,14 +98,14 @@
             <td th:text="${item.productName}">Nom du produit</td>
             <td><img class="product-image" th:src="${item.productImage}" alt="Image du produit"></td>
             <td th:text="${item.quantity}">1</td>
-            <td th:text="${#numbers.formatDecimal(item.price, 0, 'COMMA', 2, 'POINT')} + ' €'">19.99 €</td>
-            <td th:text="${#numbers.formatDecimal(item.totalPrice, 0, 'COMMA', 2, 'POINT')} + ' €'">19.99 €</td>
+            <td th:text="${#numbers.formatDecimal(item.price, 0, 'COMMA', 2, 'POINT')} + ' FCFA'">19.99 FCFA</td>
+            <td th:text="${#numbers.formatDecimal(item.totalPrice, 0, 'COMMA', 2, 'POINT')} + ' FCFA'">19.99 FCFA</td>
         </tr>
         </tbody>
     </table>
 
     <div class="total">
-        <p>Total de la commande : <span th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 2, 'POINT')} + ' €'">59.97 €</span></p>
+        <p>Total de la commande : <span th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 2, 'POINT')} + ' FCFA'">59.97 FCFA</span></p>
     </div>
 
     <p>Nous vous informerons lorsque votre commande sera expédiée. Vous pouvez également suivre l'état de votre commande dans votre compte.</p>
