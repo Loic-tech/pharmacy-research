@@ -8,6 +8,8 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
@@ -19,6 +21,7 @@ public class SubCategoryService {
   private final SubCategoryRepository subCategoryRepository;
   private final SubCategoryMapper subCategoryMapper;
 
+  @Transactional
   public SubCategoryDTO create(SubCategoryDTO subCategoryDTO) {
     return Optional.of(subCategoryDTO)
         .map(subCategoryMapper::toEntity)
@@ -50,6 +53,7 @@ public class SubCategoryService {
     return null;
   }
 
+  @Transactional
   public void delete(Long id) {
     subCategoryRepository.deleteById(id);
   }

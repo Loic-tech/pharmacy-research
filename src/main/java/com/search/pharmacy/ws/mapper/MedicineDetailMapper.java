@@ -25,7 +25,6 @@ public interface MedicineDetailMapper extends AbstractMapper<Medicine, MedicineD
     @Mapping(target = "categoryDTO.name", source = "entity.category.name")
     @Mapping(target = "subCategoryDTO.id", source = "entity.subCategory.id")
     @Mapping(target = "subCategoryDTO.name", source = "entity.subCategory.name")
-    @Mapping(target = "subCategoryDTO.categoryDTO.id", source = "entity.subCategory.id")
-    @Mapping(target = "subCategoryDTO.categoryDTO.name", source = "entity.subCategory.name")
+    @Mapping(target = "subCategoryDTO.idCategory", source = "entity.subCategory.category.id")
     MedicineDetailDTO toDTO(final Medicine entity);
 }

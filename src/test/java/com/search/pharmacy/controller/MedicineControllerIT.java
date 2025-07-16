@@ -1,24 +1,22 @@
-/*
 package com.search.pharmacy.controller;
 
+import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.fge.jackson.JsonLoader;
-import com.github.fge.jsonpatch.JsonPatch;
+import com.search.pharmacy.config.SecurityConfig;
+import com.search.pharmacy.ws.controller.MedicineController;
 import io.restassured.http.ContentType;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
@@ -28,16 +26,17 @@ import org.springframework.test.web.servlet.MockMvc;
 @RunWith(SpringRunner.class)
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    properties = "spring.profiles.active=test")
+    properties =
+        "spring.profiles.active=test, " +
+                "\"spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration\"")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@Import(SecurityConfig.class)
 public class MedicineControllerIT {
 
   @LocalServerPort private int port;
-  @Autowired ObjectMapper objectMapper;
-
 
   @Test
-  @Sql(scripts = "classpath:service/test_it_medicine_service.sql")
+  @Sql(scripts = "classpath:service/datasets.sql")
   @Sql(
       scripts = "classpath:service/dropTestData.sql",
       executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
@@ -47,15 +46,16 @@ public class MedicineControllerIT {
 
     // when
     given()
-        .get(buildURL(uri))
-        .prettyPeek()
-        .then()
-        .statusCode(200)
-        .contentType(ContentType.JSON)
-        .body("size()", is(2));
+            .auth().basic("Admin", "<PASSWORD>") // ou .preemptive().basic()
+            .when()
+            .get(buildURL(uri))
+            .then()
+            .statusCode(200)
+            .contentType(ContentType.JSON)
+            .body("size()", is(2));
   }
 
-  @Test
+/*  @Test
   @Sql(scripts = "classpath:service/test_it_medicine_service.sql")
   @Sql(
       scripts = "classpath:service/dropTestData.sql",
@@ -147,10 +147,9 @@ public class MedicineControllerIT {
       executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
   public void should_delete_medicine_by_id() {
     given().delete(buildURL("/medicine/1")).then().statusCode(200);
-  }
+  }*/
 
   public final String buildURL(String uri) {
     return "http://localhost:" + port + "/api" + uri;
   }
 }
-*/

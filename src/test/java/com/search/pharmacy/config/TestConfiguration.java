@@ -5,9 +5,15 @@ import java.util.Map;
 import javax.sql.DataSource;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.web.SecurityFilterChain;
 
 @org.springframework.boot.test.context.TestConfiguration
+@EnableWebSecurity
 public class TestConfiguration {
   @Bean
   public DataSource dataSource() {
@@ -29,5 +35,12 @@ public class TestConfiguration {
     jpaProperties.setProperties(properties);
 
     return jpaProperties;
+  }
+
+  @Bean
+  @Primary
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
+    return http.build();
   }
 }

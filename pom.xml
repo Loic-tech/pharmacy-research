@@ -216,6 +216,7 @@
                     <includes>
                         <!-- Add your custom test patterns here -->
                         <include>**/*IT.java</include>
+                        <include>**/**Test.java</include>
                         <!-- You can add more patterns as needed -->
                     </includes>
                 </configuration>

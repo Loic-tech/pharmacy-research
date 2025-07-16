@@ -82,8 +82,6 @@ public class OrderService {
       existingOrder.setUser(user);
     }
 
-    existingOrder.getOrderLines().clear();
-
     double totalAmount = 0.0;
     List<OrderLine> newOrderLines = new ArrayList<>();
 

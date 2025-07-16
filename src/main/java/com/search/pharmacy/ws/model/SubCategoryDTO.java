@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class SubCategoryDTO {
     private Long id;
     private String name;
-    private CategoryDTO categoryDTO;
+    private Long idCategory;
 }

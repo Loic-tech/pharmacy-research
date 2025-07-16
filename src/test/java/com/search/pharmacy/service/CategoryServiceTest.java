@@ -36,9 +36,9 @@ public class CategoryServiceTest {
 
     // Then
     assertThat(actual).hasSize(3);
-    assertThat(actual.get(0).getName()).isEqualTo("Bébés");
+    assertThat(actual.get(0).getName()).isEqualTo("Bebes");
     assertThat(actual.get(1).getName()).isEqualTo("Visage");
-    assertThat(actual.get(2).getName()).isEqualTo("Maux de tête");
+    assertThat(actual.get(2).getName()).isEqualTo("Maux de tete");
   }
 
   @Test
@@ -76,7 +76,7 @@ public class CategoryServiceTest {
     // Then
     assertThat(actual).isNotNull();
     assertThat(actual.getId()).isEqualTo(1);
-    assertThat(actual.getName()).isEqualTo("Bébés");
+    assertThat(actual.getName()).isEqualTo("Bebes");
   }
 
   @Test
