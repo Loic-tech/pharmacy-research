@@ -6,6 +6,7 @@ import com.search.pharmacy.service.MedicineService;
 import com.search.pharmacy.ws.model.MedicineDTO;
 import com.search.pharmacy.ws.model.MedicineDetailDTO;
 import com.search.pharmacy.ws.model.MedicineListDTO;
+import jakarta.validation.Valid;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -28,7 +29,8 @@ public class MedicineController {
   @PostMapping
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity<MedicineDTO> createMedicine(
-      @ModelAttribute MedicineDTO medicineDTO, @RequestPart MultipartFile file) throws Exception {
+      @Valid @ModelAttribute MedicineDTO medicineDTO, @RequestPart MultipartFile file)
+      throws Exception {
     log.debug("[ENDPOINT] request to create a medicine : {}", medicineDTO.getName());
     return ResponseEntity.ok(medicineService.create(medicineDTO, file));
   }
@@ -40,8 +42,8 @@ public class MedicineController {
   }
 
   /**
-   * Endpoint unifié pour rechercher des médicaments
-   * Supporte la recherche par nom, catégorie, ou les deux
+   * Endpoint unifié pour rechercher des médicaments Supporte la recherche par nom, catégorie, ou
+   * les deux
    *
    * @param name Nom du médicament (optionnel)
    * @param categoryId ID de la catégorie (optionnel)
@@ -51,15 +53,14 @@ public class MedicineController {
    */
   @GetMapping
   public ResponseEntity<Page<MedicineListDTO>> getMedicinesBySearchCriteria(
-          @RequestParam(required = false) String name,
-          @RequestParam(required = false) Long categoryId,
-          @RequestParam(defaultValue = "0") int page,
-          @RequestParam(defaultValue = "10") int size) {
+      @RequestParam(required = false) String name,
+      @RequestParam(required = false) Long categoryId,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size) {
 
     try {
-      Page<MedicineListDTO> medicines = medicineService.searchMedicines(
-              name, categoryId, page, size
-      );
+      Page<MedicineListDTO> medicines =
+          medicineService.searchMedicines(name, categoryId, page, size);
       return ResponseEntity.ok(medicines);
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -69,9 +70,9 @@ public class MedicineController {
   @PatchMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity<MedicineDetailDTO> updateMedicine(
-          @PathVariable(value = "id") Long id,
-          @RequestParam(required = false) Map<String, Object> fields,
-          @RequestPart(required = false) MultipartFile file) {
+      @PathVariable(value = "id") Long id,
+      @RequestParam(required = false) Map<String, Object> fields,
+      @RequestPart(required = false) MultipartFile file) {
     log.info("[ENDPOINT] Received request to update medicine with id {}", id);
     return ResponseEntity.ok(medicineService.update(id, fields, file));
   }

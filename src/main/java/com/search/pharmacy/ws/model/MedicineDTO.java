@@ -1,6 +1,8 @@
 package com.search.pharmacy.ws.model;
 
+import com.search.pharmacy.utils.ValidPrice;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 @Data
@@ -8,6 +10,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ValidPrice
 public class MedicineDTO {
   private Long id;
 
@@ -26,8 +29,10 @@ public class MedicineDTO {
   private Integer quantity;
 
   @NotNull(message = "new price for the drug should not be null")
+  @Positive(message = "new price must be positive")
   private Double newPrice;
 
+  @Positive(message = "old price must be positive")
   private Double oldPrice;
 
   @NotNull(message = "complete description for the drug should not be null")
