@@ -5,4 +5,5 @@ DELETE FROM medicine;
 DELETE FROM categories;
 DELETE FROM users_roles;
 DELETE FROM roles;
+DELETE FROM user_urls;
 DELETE FROM users;

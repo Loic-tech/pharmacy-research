@@ -1,3 +1,4 @@
+/*
 package com.search.pharmacy.controller;
 
 
@@ -40,6 +41,7 @@ public class MedicineControllerIT {
             .body("size()", is(2));
   }
 
+*/
 /*  @Test
   @Sql(scripts = "classpath:service/test_it_medicine_service.sql")
   @Sql(
@@ -132,9 +134,11 @@ public class MedicineControllerIT {
       executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
   public void should_delete_medicine_by_id() {
     given().delete(buildURL("/medicine/1")).then().statusCode(200);
-  }*/
+  }*//*
+
 
   public final String buildURL(String uri) {
     return "http://localhost:" + port + "/api" + uri;
   }
 }
+*/

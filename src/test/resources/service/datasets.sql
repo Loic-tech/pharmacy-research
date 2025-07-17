@@ -19,9 +19,10 @@ INSERT INTO roles(id_role, name, created_date, last_modified_date)
 VALUES (1, 'ROLE_ADMIN', now(), now()),
        (2, 'ROLE_USER', now(), now());
 
-INSERT INTO users(id_user, firstname, lastname, email, password, created_date, last_modified_date)
-VALUES (1, 'Admin', 'Admin', '<EMAIL>', '$2a$10$200Z6ZZbp3RAEXoaWcMAeusfpgzwwF9uK/jIJ2WxFm2N0xW9ThQwS', now(), now()),
-       (2, 'User', 'user', 'user@user.com', '$2a$10$200Z6ZZbp3RAEXoaWcMAeusfpgzwwF9uK/jIJ2WxFm2N0xW9ThQwS', now(), now());
+INSERT INTO users(id_user, firstname, lastname, email, password, birth_date, is_valid, created_date, last_modified_date)
+VALUES (1, 'Admin', 'Admin', '<EMAIL>', '$2a$10$200Z6ZZbp3RAEXoaWcMAeusfpgzwwF9uK/jIJ2WxFm2N0xW9ThQwS', '15/12/1999', false, now(), now()),
+       (2, 'User', 'user', 'user@user.com', '$2a$10$200Z6ZZbp3RAEXoaWcMAeusfpgzwwF9uK/jIJ2WxFm2N0xW9ThQwS', '15/12/1999',false, now(), now()),
+       (3, null, null, 'toto@email.com', '$2a$10$200Z6ZZbp3RAEXoaWcMAeusfpgzwwF9uK/jIJ2WxFm2N0xW9ThQwS', null, false, now(), now());
 
 INSERT INTO users_roles(id_user, id_role)
 VALUES (1, 1), (2, 2);
