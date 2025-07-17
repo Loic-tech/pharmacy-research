@@ -2,26 +2,29 @@ package com.search.pharmacy.service;
 
 import static com.search.pharmacy.utils.Utils.convertToRoleDTOs;
 
+import com.search.pharmacy.common.exception.InvalidParamException;
 import com.search.pharmacy.config.JwtService;
 import com.search.pharmacy.domain.model.Roles;
 import com.search.pharmacy.domain.model.User;
 import com.search.pharmacy.repository.RoleRepository;
 import com.search.pharmacy.repository.UserRepository;
+import com.search.pharmacy.ws.mapper.PartialUserMapper;
 import com.search.pharmacy.ws.mapper.UserMapper;
-import com.search.pharmacy.ws.model.AuthenticatedUserDTO;
-import com.search.pharmacy.ws.model.LoginUserDTO;
-import com.search.pharmacy.ws.model.UserDTO;
+import com.search.pharmacy.ws.model.*;
 import jakarta.transaction.Transactional;
 import java.lang.reflect.Field;
 import java.util.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserService {
 
@@ -31,12 +34,21 @@ public class UserService {
   private final AuthenticationManager authenticationManager;
   private final JwtService jwtService;
   private final RoleRepository roleRepository;
+  private final PartialUserMapper partialUserMapper;
+  private final MinioService minioService;
 
   @Transactional
-  public UserDTO create(UserDTO userDTO) {
-    userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+  public UserDTO partialUserCreation(PartialUserDTO partialUserDTO) {
 
-    User user = userMapper.toEntity(userDTO);
+    log.info("[UserService] Creating Partial User with Email : {}", partialUserDTO.getEmail());
+
+    if (userRepository.findByEmail(partialUserDTO.getEmail()).isPresent()) {
+      throw new InvalidParamException("Email already taken: " + partialUserDTO.getEmail() + " !");
+    }
+    partialUserDTO.setPassword(passwordEncoder.encode(partialUserDTO.getPassword()));
+    partialUserDTO.setValid(false);
+
+    User user = partialUserMapper.toEntity(partialUserDTO);
     Roles defaultRole =
         (Roles)
             roleRepository
@@ -53,6 +65,54 @@ public class UserService {
         .map(userRepository::save)
         .map(userMapper::toDTO)
         .orElseThrow(() -> new RuntimeException("Impossible de créer un nouvel utilisateur"));
+  }
+
+  @Transactional
+  public UserDTO completeUserCreation(
+      Long userId, CompleteUserDTO completeUserDTO, List<MultipartFile> files) {
+
+    if (files == null || files.isEmpty()) {
+      throw new InvalidParamException("User must have at least one file associated with him/her");
+    }
+
+    Optional<User> optionalUser = userRepository.findById(userId);
+
+    if (optionalUser.isEmpty()) {
+      throw new InvalidParamException("User with id " + userId + " not found");
+    }
+
+    List<String> fileUrls = new ArrayList<>();
+    if (files != null) {
+      files.forEach(
+          file -> {
+            try {
+              fileUrls.add(minioService.uploadFiles(file));
+            } catch (Exception e) {
+              throw new RuntimeException(e);
+            }
+          });
+    }
+
+    completeUserDTO.setUrls(fileUrls);
+    optionalUser.get().setFirstName(completeUserDTO.getFirstName());
+    optionalUser.get().setLastName(completeUserDTO.getLastName());
+    optionalUser.get().setBirthDate(completeUserDTO.getBirthDate());
+    optionalUser.get().setUrls(completeUserDTO.getUrls());
+
+    return userMapper.toDTO(userRepository.save(optionalUser.get()));
+  }
+
+  @Transactional
+  public String validateUserProfile(Long userId) {
+    Optional<User> optionalUser = userRepository.findById(userId);
+    if (optionalUser.isEmpty()) {
+      throw new InvalidParamException("User with id " + userId + " not found");
+    }
+    optionalUser.get().setValid(true);
+    userRepository.save(optionalUser.get());
+    return "User with id " + userId + " validated successfully";
+
+    // Envoyer un email au user si son profil est validé ! "à faire"
   }
 
   public AuthenticatedUserDTO login(LoginUserDTO loginUserDTO) {

@@ -76,6 +76,14 @@ public class MedicineController {
     return ResponseEntity.ok(medicineService.update(id, fields, file));
   }
 
+  @DeleteMapping(value = "/file/{medicineId}", produces = APPLICATION_JSON_VALUE)
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public ResponseEntity<Void> deleteFile(@PathVariable(value = "medicineId") Long medicineId) {
+    log.info("[ENDPOINT] Received request to delete file with id {}", medicineId);
+    medicineService.deleteFile(medicineId);
+    return ResponseEntity.ok().build();
+  }
+
   @DeleteMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity<Void> deleteMedicine(@PathVariable(value = "id") Long medicineId) {

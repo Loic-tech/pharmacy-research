@@ -145,6 +145,20 @@ public class MedicineService {
     }
   }
 
+  public void deleteFile(Long medicineId) {
+    log.info("[MedicineService] Delete Medicine File with id {}", medicineId);
+    Optional<Medicine> optionalMedicine = medicineRepository.findById(medicineId);
+    if (optionalMedicine.isPresent()) {
+      Medicine medicine = optionalMedicine.get();
+      String fileName = extractFilename(medicine.getUrl());
+      try {
+        minioService.deleteFile(fileName);
+      } catch (Exception e) {
+        log.error("Erreur lors de la suppression du fichier: {}", e.getMessage(), e);
+      }
+    }
+  }
+
   public String extractFilename(String url) {
     int lastSlashIndex = url.lastIndexOf('/');
     if (lastSlashIndex != -1 && lastSlashIndex < url.length() - 1) {

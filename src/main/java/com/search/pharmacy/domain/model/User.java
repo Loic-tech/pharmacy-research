@@ -11,6 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -34,6 +35,15 @@ public class User extends AbstractEntity<Long> implements UserDetails {
 
     @Column(name = "password")
     private String password;
+
+    @Column(name = "birth_date")
+    private String birthDate;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> urls;
+
+    @Column(name = "is_valid", nullable = false)
+    private boolean isValid;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

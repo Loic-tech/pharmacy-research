@@ -1,16 +1,18 @@
 package com.search.pharmacy.ws.controller;
 
 import com.search.pharmacy.service.UserService;
-import com.search.pharmacy.ws.model.AuthenticatedUserDTO;
-import com.search.pharmacy.ws.model.LoginUserDTO;
-import com.search.pharmacy.ws.model.UserDTO;
+import com.search.pharmacy.ws.model.*;
 import java.util.List;
 import java.util.Map;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/users")
@@ -21,13 +23,28 @@ public class UserController {
   private final UserService userService;
 
   @PostMapping
-  public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
-    log.debug("[ENDPOINT] request to create user");
-    return ResponseEntity.ok(userService.create(userDTO));
+  public ResponseEntity<UserDTO> partialUserCreation(@RequestBody @Valid PartialUserDTO partialUserDTO) {
+    log.debug("[ENDPOINT] request to create partial user");
+    return ResponseEntity.ok(userService.partialUserCreation(partialUserDTO));
+  }
+
+  @PatchMapping("complete/{userId}")
+  public ResponseEntity<UserDTO> completeUserCreation(
+      @PathVariable("userId") Long userId,
+      @ModelAttribute @Valid CompleteUserDTO completeUserDTO,
+      @RequestPart List<MultipartFile> files) {
+    log.debug("[ENDPOINT] request to create complete user");
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(userService.completeUserCreation(userId, completeUserDTO, files));
+  }
+
+  @PatchMapping("/{userId}/validate")
+  public ResponseEntity<String> validateUser(@PathVariable("userId") Long userId) {
+    return ResponseEntity.ok(userService.validateUserProfile(userId));
   }
 
   @PostMapping("/auth")
-  public ResponseEntity<AuthenticatedUserDTO> login(@RequestBody LoginUserDTO loginUserDTO) {
+  public ResponseEntity<AuthenticatedUserDTO> login(@RequestBody @Valid LoginUserDTO loginUserDTO) {
     log.debug("[ENDPOINT] request to login user");
     return ResponseEntity.ok(userService.login(loginUserDTO));
   }

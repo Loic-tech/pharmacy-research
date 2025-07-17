@@ -42,4 +42,11 @@ public class SubCategoryController {
     log.info("[ENDPOINT] Received request to update a sub category with id {}", id);
     return ResponseEntity.ok(subCategoryService.update(id, fields));
   }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteSubCategory(@PathVariable(value = "id") Long subCategoryId) {
+    log.info("[ENDPOINT] Received request to delete sub category with id {}", subCategoryId);
+    subCategoryService.delete(subCategoryId);
+    return ResponseEntity.ok().build();
+  }
 }

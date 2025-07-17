@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-new-columns-to-medicine-tables
+      author: l.gnagoh
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: birth_date
+                  type: varchar(20)
+              - column:
+                  name: is_valid
+                  type: boolean
+                  defaultValueBoolean: false
+              - column:
+                  name: urls
+                  type: varchar(2048)
+        - addForeignKeyConstraint:
+            baseTableName: users_urls
+            baseColumnNames: users_id
+            referencedTableName: users
+            referencedColumnNames: id_user
+            constraintName: fk_users_urls

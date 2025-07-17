@@ -5,11 +5,13 @@ import com.search.pharmacy.domain.model.Roles;
 import com.search.pharmacy.domain.model.User;
 import com.search.pharmacy.ws.model.UserDTO;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = {Roles.class})
 public interface UserMapper extends AbstractMapper<User, UserDTO> {
 
   @Override
+  @Mapping(source = "entity.valid", target = "isValid")
   UserDTO toDTO(final User entity);
 
   @Override
