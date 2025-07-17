@@ -1,25 +1,19 @@
 package com.search.pharmacy.controller;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.is;
 
 import com.search.pharmacy.config.SecurityConfig;
-import io.restassured.http.ContentType;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     properties =
-        "spring.profiles.active=test, "
-            + "\"spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration\"")
+        "spring.profiles.active=test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Import(SecurityConfig.class)
 public class MedicineControllerIT {
@@ -37,17 +31,16 @@ public class MedicineControllerIT {
 
     // when
     given()
-        .auth()
-        .basic("Admin", "<PASSWORD>") // ou .preemptive().basic()
-        .when()
-        .get(buildURL(uri))
-        .then()
-        .statusCode(200)
-        .contentType(ContentType.JSON)
-        .body("size()", is(2));
+            .auth().basic("Admin", "<PASSWORD>") // ou .preemptive().basic()
+            .when()
+            .get(buildURL(uri))
+            .then()
+            .statusCode(200)
+            .contentType(ContentType.JSON)
+            .body("size()", is(2));
   }
 
-  /*  @Test
+/*  @Test
   @Sql(scripts = "classpath:service/test_it_medicine_service.sql")
   @Sql(
       scripts = "classpath:service/dropTestData.sql",
