@@ -59,7 +59,7 @@ public class UserServiceTest {
     assertThat(actual).isNotNull();
     assertThat(actual.getEmail()).isEqualTo("lolo@email.com");
     assertThat(actual.getRoles().get(0).getName()).isEqualTo("ROLE_USER");
-    assertThat(actual.isValid()).isFalse();
+    assertThat(actual.getValid()).isFalse();
     assertThat(actual.getId()).isEqualTo(4L);
   }
 
@@ -90,7 +90,7 @@ public class UserServiceTest {
       assertThat(userDTO.getUrls()).hasSize(1);
       assertThat(userDTO.getUrls().get(0)).isEqualTo("https://images.pharmadoc-ci.com/test-images/test.txt");
       assertThat(userDTO.getBirthDate()).isEqualTo("15/05/1990");
-      assertThat(userDTO.isValid()).isFalse();
+      assertThat(userDTO.getValid()).isFalse();
       assertThat(userDTO.getId()).isEqualTo(3L);
   }
 
