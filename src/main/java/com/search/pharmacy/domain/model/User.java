@@ -42,7 +42,7 @@ public class User extends AbstractEntity<Long> implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> urls;
 
-    @Column(name = "is_valid", nullable = false)
+    @Column(name = "is_valid")
     private boolean isValid;
 
     @ManyToMany(fetch = FetchType.EAGER)
