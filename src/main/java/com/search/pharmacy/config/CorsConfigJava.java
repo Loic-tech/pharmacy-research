@@ -10,7 +10,7 @@ public class CorsConfigJava implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("https://mvp.pharmadoc-ci.com/", "http://31.97.153.208:2500")
+                .allowedOrigins("*")
                 .allowedMethods("GET", "POST", "PUT","PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .maxAge(3600);
