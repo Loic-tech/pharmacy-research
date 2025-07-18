@@ -26,6 +26,6 @@ public class UserDTO {
   private String password;
   private String birthDate;
   private List<String> urls;
-  private boolean isValid;
+  private Boolean valid;
   private List<RoleDTO> roles;
 }

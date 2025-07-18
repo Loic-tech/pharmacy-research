@@ -11,7 +11,7 @@ import org.mapstruct.Mapping;
 public interface UserMapper extends AbstractMapper<User, UserDTO> {
 
   @Override
-  @Mapping(source = "entity.valid", target = "isValid")
+  @Mapping(source = "entity.valid", target = "valid")
   UserDTO toDTO(final User entity);
 
   @Override

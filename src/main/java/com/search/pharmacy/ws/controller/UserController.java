@@ -5,6 +5,7 @@ import com.search.pharmacy.ws.model.*;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +40,7 @@ public class UserController {
   }
 
   @PatchMapping("/{userId}/validate")
-  public ResponseEntity<String> validateUser(@PathVariable("userId") Long userId) {
+  public ResponseEntity<String> validateUser(@PathVariable("userId") Long userId) throws MessagingException {
     return ResponseEntity.ok(userService.validateUserProfile(userId));
   }
 

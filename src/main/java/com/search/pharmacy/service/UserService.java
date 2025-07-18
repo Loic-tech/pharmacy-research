@@ -11,6 +11,7 @@ import com.search.pharmacy.repository.UserRepository;
 import com.search.pharmacy.ws.mapper.PartialUserMapper;
 import com.search.pharmacy.ws.mapper.UserMapper;
 import com.search.pharmacy.ws.model.*;
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import java.lang.reflect.Field;
 import java.util.*;
@@ -36,6 +37,7 @@ public class UserService {
   private final RoleRepository roleRepository;
   private final PartialUserMapper partialUserMapper;
   private final MinioService minioService;
+  private final ProfileValidationService profileValidationService;
 
   @Transactional
   public UserDTO partialUserCreation(PartialUserDTO partialUserDTO) {
@@ -103,16 +105,15 @@ public class UserService {
   }
 
   @Transactional
-  public String validateUserProfile(Long userId) {
+  public String validateUserProfile(Long userId) throws MessagingException {
     Optional<User> optionalUser = userRepository.findById(userId);
     if (optionalUser.isEmpty()) {
       throw new InvalidParamException("User with id " + userId + " not found");
     }
     optionalUser.get().setValid(true);
     userRepository.save(optionalUser.get());
+    profileValidationService.sendValidationProfileEmail(optionalUser.get());
     return "User with id " + userId + " validated successfully";
-
-    // Envoyer un email au user si son profil est validé ! "à faire"
   }
 
   public AuthenticatedUserDTO login(LoginUserDTO loginUserDTO) {

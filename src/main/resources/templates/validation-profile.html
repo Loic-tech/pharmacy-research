@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Validé - Spring Boot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 60px 40px;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            /* Amélioration pour mobile */
+            min-height: auto;
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #6ab04c, #00d2d3);
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #6ab04c, #00d2d3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            animation: pulse 2s infinite;
+        }
+
+        .success-icon::after {
+            content: '✓';
+            font-size: 40px;
+            color: white;
+            font-weight: bold;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.2em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .profile-info {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+            border-left: 4px solid #6ab04c;
+        }
+
+        .profile-info h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .info-value {
+            color: #6ab04c;
+            font-weight: 600;
+        }
+
+        .spring-boot-badge {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, #6db33f, #4a7c59);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin: 20px 0;
+        }
+
+        .spring-boot-badge::before {
+            content: '🍃';
+            margin-right: 8px;
+        }
+
+        .action-buttons {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            /* Amélioration tactile */
+            min-height: 44px;
+            min-width: 120px;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #495057;
+            border: 2px solid #dee2e6;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+            transform: translateY(-1px);
+        }
+
+        .footer-note {
+            margin-top: 40px;
+            font-size: 0.9em;
+            color: #6c757d;
+            line-height: 1.5;
+        }
+
+        /* Responsive Design - Mobile First */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 30px 20px;
+                border-radius: 15px;
+                max-width: 100%;
+            }
+
+            h1 {
+                font-size: 1.8em;
+                line-height: 1.2;
+            }
+
+            .subtitle {
+                font-size: 1em;
+                margin-bottom: 20px;
+            }
+
+            .success-icon {
+                width: 70px;
+                height: 70px;
+                margin-bottom: 20px;
+            }
+
+            .success-icon::after {
+                font-size: 35px;
+            }
+
+            .profile-info {
+                padding: 20px;
+                margin: 20px 0;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .btn {
+                width: 100%;
+                padding: 15px 20px;
+                font-size: 1.1em;
+            }
+
+            .info-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+                padding: 12px 0;
+            }
+
+            .info-value {
+                font-size: 1.1em;
+            }
+        }
+
+        /* Très petits écrans */
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px 15px;
+                margin: 5px;
+            }
+
+            h1 {
+                font-size: 1.6em;
+            }
+
+            .spring-boot-badge {
+                font-size: 0.8em;
+                padding: 6px 12px;
+            }
+
+            .footer-note {
+                font-size: 0.85em;
+                margin-top: 30px;
+            }
+        }
+
+        /* Tablettes */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                max-width: 600px;
+                padding: 50px 35px;
+            }
+
+            .action-buttons {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+
+        /* Grands écrans */
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 550px;
+                padding: 70px 50px;
+            }
+
+            h1 {
+                font-size: 2.4em;
+            }
+
+            .success-icon {
+                width: 90px;
+                height: 90px;
+            }
+
+            .success-icon::after {
+                font-size: 45px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="success-icon"></div>
+
+    <h1>Profil Validé !</h1>
+
+    <p class="subtitle">
+        Félicitations ! Votre profil a été validé avec succès pour l'application Pharmadoc.
+    </p>
+
+    <div class="spring-boot-badge">
+       PHARMADOC
+    </div>
+
+    <div class="profile-info">
+        <h3>Informations du profil</h3>
+        <div class="info-item">
+            <span class="info-label">Statut</span>
+            <span class="info-value">✓ Validé</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label"> Nom & Prénoms </span>
+            <span class="info-value" th:text="${firstname + ' ' + lastname}">Nom & Prénoms</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Date de validation: </span>
+            <span class="info-value" id="validation-date" th:text="${validationDate}"></span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Version</span>
+            <span class="info-value">1.0</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Permissions: </span>
+            <span class="info-value">Actives</span>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <a href="#" class="btn btn-primary" onclick="goToDashboard()">
+            Accéder au tableau de bord
+        </a>
+        <a href="#" class="btn btn-secondary" onclick="viewProfile()">
+            Voir le profil
+        </a>
+    </div>
+
+    <div class="footer-note">
+        <p>Vous pouvez maintenant accéder à toutes les fonctionnalités de l'application.</p>
+        <p>En cas de problème, contactez l'administrateur système.</p>
+    </div>
+</div>
+
+<script>
+    // Afficher la date de validation actuelle
+    document.getElementById('validation-date').textContent =
+        new Date().toLocaleDateString('fr-FR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+    // Fonctions pour les boutons (à adapter selon vos besoins)
+    function goToDashboard() {
+        // Rediriger vers le tableau de bord
+        window.location.href = '/dashboard';
+    }
+
+    function viewProfile() {
+        // Rediriger vers la page de profil
+        window.location.href = '/profile';
+    }
+
+    // Animation d'apparition adaptée au mobile
+    window.addEventListener('load', function() {
+        const container = document.querySelector('.container');
+        container.style.opacity = '0';
+        container.style.transform = 'translateY(20px)';
+        container.style.transition = 'all 0.6s ease';
+
+        setTimeout(() => {
+            container.style.opacity = '1';
+            container.style.transform = 'translateY(0)';
+        }, 100);
+    });
+
+    // Amélioration de l'expérience tactile
+    document.addEventListener('DOMContentLoaded', function() {
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(button => {
+            button.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.95)';
+            });
+
+            button.addEventListener('touchend', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+    });
+</script>
+</body>
+</html>
