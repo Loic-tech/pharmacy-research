@@ -51,7 +51,7 @@ public class Medicine extends AbstractEntity<Long> {
 
   @Column(name = "old_price")
   @ToString.Include
-  private Double OldPrice;
+  private Double oldPrice;
 
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "id_category", nullable = false)

@@ -96,7 +96,12 @@ public class MedicineService {
             Field field = ReflectionUtils.findField(Medicine.class, key);
             if (field != null) {
               field.setAccessible(true);
-              ReflectionUtils.setField(field, patchMedicine, value);
+
+              // Convertir les valeurs selon le type du champ
+              Object convertedValue = convertValueToFieldType(value, field.getType());
+              if (convertedValue != null) {
+                ReflectionUtils.setField(field, patchMedicine, convertedValue);
+              }
             }
           });
 
@@ -167,4 +172,50 @@ public class MedicineService {
     }
     return url;
   }
+
+  private Object convertValueToFieldType(Object value, Class<?> targetType) {
+    if (value == null) {
+      return null;
+    }
+
+    try {
+      // Si la valeur est déjà du bon type, la retourner directement
+      if (targetType.isInstance(value)) {
+        return value;
+      }
+
+      // Conversion des types primitifs et leurs wrapper classes
+      if (targetType == Double.class || targetType == double.class) {
+        if (value instanceof String) {
+          return Double.parseDouble((String) value);
+        } else if (value instanceof Number) {
+          return ((Number) value).doubleValue();
+        }
+      } else if (targetType == Integer.class || targetType == int.class) {
+        if (value instanceof String) {
+          return Integer.parseInt((String) value);
+        } else if (value instanceof Number) {
+          return ((Number) value).intValue();
+        }
+      } else if (targetType == Long.class || targetType == long.class) {
+        if (value instanceof String) {
+          return Long.parseLong((String) value);
+        } else if (value instanceof Number) {
+          return ((Number) value).longValue();
+        }
+      } else if (targetType == Boolean.class || targetType == boolean.class) {
+        if (value instanceof String) {
+          return Boolean.parseBoolean((String) value);
+        }
+      }
+
+      // Si aucune conversion n'est disponible, retourner la valeur telle quelle
+      // (cela pourrait générer une erreur, mais c'est le comportement d'origine)
+      return value;
+    } catch (NumberFormatException e) {
+      log.error("Erreur lors de la conversion de '{}' vers {}: {}", value, targetType.getSimpleName(), e.getMessage());
+      return null;
+    }
+  }
+
 }
