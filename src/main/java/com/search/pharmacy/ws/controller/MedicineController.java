@@ -71,7 +71,7 @@ public class MedicineController {
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity<MedicineDetailDTO> updateMedicine(
       @PathVariable(value = "id") Long id,
-      @RequestBody(required = false) Map<String, Object> fields,
+      @ModelAttribute Map<String, Object> fields,
       @RequestPart(required = false) MultipartFile file) {
     log.info("[ENDPOINT] Received request to update medicine with id {}", id);
     return ResponseEntity.ok(medicineService.update(id, fields, file));
