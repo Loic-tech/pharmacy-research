@@ -153,6 +153,7 @@ public class MedicineService {
       String fileName = extractFilename(medicine.getUrl());
       try {
         minioService.deleteFile(fileName);
+        medicine.setUrl(null);
       } catch (Exception e) {
         log.error("Erreur lors de la suppression du fichier: {}", e.getMessage(), e);
       }
