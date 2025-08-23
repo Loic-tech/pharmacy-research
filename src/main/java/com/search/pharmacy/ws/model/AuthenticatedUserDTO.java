@@ -17,5 +17,6 @@ public class AuthenticatedUserDTO {
     private String lastName;
     private String email;
     private String token;
+    private Boolean valid;
     private Set<RoleDTO> roles;
 }

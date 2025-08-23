@@ -23,7 +23,6 @@ public class UserDTO {
   @NotNull(message = "email cannot be null")
   @Email(message = "email is not valid")
   private String email;
-  private String password;
   private String birthDate;
   private List<String> urls;
   private Boolean valid;
